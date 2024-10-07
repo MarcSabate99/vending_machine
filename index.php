@@ -1,6 +1,8 @@
 <?php
 
+use VendingMachine\Application\Command\AddChangeCommand;
 use VendingMachine\Application\Command\InsertCoinCommand;
+use VendingMachine\Application\Handler\AddChangeCommandHandler;
 use VendingMachine\Application\Handler\InsertCoinCommandHandler;
 use VendingMachine\Application\Service\ReturnCoins;
 use VendingMachine\Infrastructure\Repository\InMemoryRepository;
@@ -51,7 +53,29 @@ while (true) {
             echo "get";
             break;
         case SERVICE:
-            echo "service";
+            echo "Choose an action (change, products, exit): ";
+            $handle = fopen("php://stdin", "r");
+            $serviceAction = trim(fgets($handle));
+            switch ($serviceAction){
+                case "change":
+                    echo "Insert the change: ";
+                    $handle = fopen("php://stdin", "r");
+                    $quantity = trim(fgets($handle));
+                    /**
+                     * @var AddChangeCommandHandler $handler
+                     */
+                    $handler = $container->get(AddChangeCommandHandler::class);
+                    $handler->handle(new AddChangeCommand($quantity));
+                    echo "Change added\n";
+                    break;
+                case "exit":
+                    break;
+                case "products":
+                    echo "Choose an action (add, modify): ";
+                    break;
+                default:
+                    break;
+            }
             break;
         case STOP:
             die;

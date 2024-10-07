@@ -4,10 +4,10 @@ namespace VendingMachine\Application\Service;
 
 use VendingMachine\Domain\Interface\DatabaseRepositoryInterface;
 
-class ReturnCoins
+readonly class ReturnCoins
 {
     public function __construct(
-        private readonly DatabaseRepositoryInterface $databaseRepository,
+        private DatabaseRepositoryInterface $databaseRepository,
     ) {
     }
 

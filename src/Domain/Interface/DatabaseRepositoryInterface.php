@@ -2,11 +2,13 @@
 
 namespace VendingMachine\Domain\Interface;
 
-use VendingMachine\Domain\ValueObject\Coin;
+use VendingMachine\Domain\ValueObject\Amount;
 
 interface DatabaseRepositoryInterface
 {
-    public function insertCoin(Coin $coin);
+    public function insertAmount(Amount $amount);
 
     public function returnInsertedCoins();
+
+    public function addChange(Amount $amount);
 }

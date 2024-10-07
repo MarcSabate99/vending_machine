@@ -15,6 +15,7 @@ install:
 	docker-compose up --detach
 	docker exec -it php-fpm composer install
 	docker exec -it php-fpm mkdir -p db
+	docker exec -it php-fpm mkdir -p tests/db
 
 run:
 	docker exec -it php-fpm php index.php

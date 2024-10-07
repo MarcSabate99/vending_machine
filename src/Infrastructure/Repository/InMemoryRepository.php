@@ -4,7 +4,7 @@ namespace VendingMachine\Infrastructure\Repository;
 
 use VendingMachine\Domain\Entity\VendingMachine;
 use VendingMachine\Domain\Interface\DatabaseRepositoryInterface;
-use VendingMachine\Domain\ValueObject\Coin;
+use VendingMachine\Domain\ValueObject\Amount;
 
 readonly class InMemoryRepository implements DatabaseRepositoryInterface
 {
@@ -13,11 +13,11 @@ readonly class InMemoryRepository implements DatabaseRepositoryInterface
     ) {
     }
 
-    public function insertCoin(Coin $coin): void
+    public function insertAmount(Amount $amount): void
     {
         $this->createDb();
         $vendingMachineJson = $this->getData();
-        $vendingMachineJson['insertedMoney'] += $coin->value();
+        $vendingMachineJson['insertedMoney'] += $amount->value();
         $this->save($vendingMachineJson);
     }
 
@@ -59,6 +59,14 @@ readonly class InMemoryRepository implements DatabaseRepositoryInterface
         $this->createDb();
         $vendingMachineJson                  = $this->getData();
         $vendingMachineJson['insertedMoney'] = 0;
+        $this->save($vendingMachineJson);
+    }
+
+    public function addChange(Amount $amount): void
+    {
+        $this->createDb();
+        $vendingMachineJson = $this->getData();
+        $vendingMachineJson['change'] += $amount->value();
         $this->save($vendingMachineJson);
     }
 }

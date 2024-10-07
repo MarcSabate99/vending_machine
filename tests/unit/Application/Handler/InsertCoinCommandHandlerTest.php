@@ -2,7 +2,7 @@
 
 namespace App\Tests\unit\Application\Handler;
 
-use App\Tests\ObjectMother\CoinMother;
+use App\Tests\ObjectMother\AmountMother;
 use PHPUnit\Framework\TestCase;
 use VendingMachine\Application\Command\InsertCoinCommand;
 use VendingMachine\Application\Handler\InsertCoinCommandHandler;
@@ -34,8 +34,8 @@ class InsertCoinCommandHandlerTest extends TestCase
     {
         $this->databaseRepository
             ->expects($this->once())
-            ->method('insertCoin')
-            ->with(CoinMother::create(1.40));
+            ->method('insertAmount')
+            ->with(AmountMother::create(1.40));
 
         $this->coinCommandHandler->handle(
             new InsertCoinCommand('1,0.05,0.10,0.25')
@@ -48,7 +48,7 @@ class InsertCoinCommandHandlerTest extends TestCase
 
         $this->databaseRepository
             ->expects($this->never())
-            ->method('insertCoin');
+            ->method('insertAmount');
 
         $this->coinCommandHandler->handle(
             new InsertCoinCommand('1,0.05,0.12,0.25')
@@ -59,8 +59,8 @@ class InsertCoinCommandHandlerTest extends TestCase
     {
         $this->databaseRepository
             ->expects($this->once())
-            ->method('insertCoin')
-            ->with(CoinMother::create(1));
+            ->method('insertAmount')
+            ->with(AmountMother::create(1));
 
         $this->coinCommandHandler->handle(
             new InsertCoinCommand('1')
@@ -73,7 +73,7 @@ class InsertCoinCommandHandlerTest extends TestCase
 
         $this->databaseRepository
             ->expects($this->never())
-            ->method('insertCoin');
+            ->method('insertAmount');
 
         $this->coinCommandHandler->handle(
             new InsertCoinCommand('0.24')
@@ -84,8 +84,8 @@ class InsertCoinCommandHandlerTest extends TestCase
     {
         $this->databaseRepository
             ->expects($this->once())
-            ->method('insertCoin')
-            ->with(CoinMother::create(0.25));
+            ->method('insertAmount')
+            ->with(AmountMother::create(0.25));
 
         $this->coinCommandHandler->handle(
             new InsertCoinCommand(0.25)
@@ -98,7 +98,7 @@ class InsertCoinCommandHandlerTest extends TestCase
 
         $this->databaseRepository
             ->expects($this->never())
-            ->method('insertCoin');
+            ->method('insertAmount');
 
         $this->coinCommandHandler->handle(
             new InsertCoinCommand(0.31)

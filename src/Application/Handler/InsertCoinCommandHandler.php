@@ -5,7 +5,7 @@ namespace VendingMachine\Application\Handler;
 use VendingMachine\Application\Command\InsertCoinCommand;
 use VendingMachine\Domain\Interface\DatabaseRepositoryInterface;
 use VendingMachine\Domain\Service\InsertedMoneyValidator;
-use VendingMachine\Domain\ValueObject\Coin;
+use VendingMachine\Domain\ValueObject\Amount;
 
 class InsertCoinCommandHandler
 {
@@ -27,8 +27,8 @@ class InsertCoinCommandHandler
             }
 
             $finalValue = number_format($finalValue, 2, '.', '');
-            $this->databaseRepository->insertCoin(
-                new Coin($finalValue)
+            $this->databaseRepository->insertAmount(
+                new Amount($finalValue)
             );
 
             return;
@@ -38,8 +38,8 @@ class InsertCoinCommandHandler
         $this->insertedMoneyValidator->handle($castedValue);
         $finalValue = number_format($castedValue, 2, '.', '');
 
-        $this->databaseRepository->insertCoin(
-            new Coin($finalValue)
+        $this->databaseRepository->insertAmount(
+            new Amount($finalValue)
         );
     }
 }

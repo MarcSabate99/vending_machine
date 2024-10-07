@@ -2,7 +2,7 @@
 
 namespace App\Tests\integration\Infrastructure\Repository;
 
-use App\Tests\ObjectMother\CoinMother;
+use App\Tests\ObjectMother\AmountMother;
 use PHPUnit\Framework\TestCase;
 use VendingMachine\Infrastructure\Repository\InMemoryRepository;
 
@@ -24,7 +24,7 @@ class InMemoryRepositoryTest extends TestCase
 
     public function testInsertCoin()
     {
-        $this->inMemoryRepository->insertCoin(CoinMother::create(1));
+        $this->inMemoryRepository->insertAmount(AmountMother::create(1));
         $data = $this->readDatabase();
         $this->assertNotNull($data);
         $this->assertEquals(1, $data['insertedMoney']);
@@ -32,7 +32,7 @@ class InMemoryRepositoryTest extends TestCase
 
     public function testInsertCoinAndReturn()
     {
-        $this->inMemoryRepository->insertCoin(CoinMother::create(1));
+        $this->inMemoryRepository->insertAmount(AmountMother::create(1));
         $data = $this->readDatabase();
         $this->assertNotNull($data);
         $this->assertEquals(1, $data['insertedMoney']);
@@ -40,6 +40,14 @@ class InMemoryRepositoryTest extends TestCase
         $data = $this->readDatabase();
         $this->assertNotNull($data);
         $this->assertEquals(0, $data['insertedMoney']);
+    }
+
+    public function testAddChange()
+    {
+        $this->inMemoryRepository->addChange(AmountMother::create(60));
+        $data = $this->readDatabase();
+        $this->assertNotNull($data);
+        $this->assertEquals(60, $data['change']);
     }
 
     private function readDatabase(): ?array
