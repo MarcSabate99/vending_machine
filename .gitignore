@@ -1,2 +1,6 @@
 vendor/
 db/
+.idea/
+.php-cs-fixer.cache
+.phpunit.result.cache
+tests/db/

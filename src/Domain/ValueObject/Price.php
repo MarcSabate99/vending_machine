@@ -5,9 +5,8 @@ namespace VendingMachine\Domain\ValueObject;
 readonly class Price
 {
     public function __construct(
-        private float $value
-    )
-    {
+        private float $value,
+    ) {
     }
 
     public function value(): float
