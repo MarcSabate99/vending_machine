@@ -1,9 +1,16 @@
 <?php
 
 use VendingMachine\Application\Command\AddChangeCommand;
+use VendingMachine\Application\Command\AddProductCommand;
 use VendingMachine\Application\Command\InsertCoinCommand;
+use VendingMachine\Application\Command\SetPriceCommand;
+use VendingMachine\Application\Command\SetProductQuantityCommand;
 use VendingMachine\Application\Handler\AddChangeCommandHandler;
+use VendingMachine\Application\Handler\AddProductCommandHandler;
 use VendingMachine\Application\Handler\InsertCoinCommandHandler;
+use VendingMachine\Application\Handler\SetPriceCommandHandler;
+use VendingMachine\Application\Handler\SetProductQuantityCommandHandler;
+use VendingMachine\Application\Service\ListProducts;
 use VendingMachine\Application\Service\ReturnCoins;
 use VendingMachine\Infrastructure\Repository\InMemoryRepository;
 use VendingMachine\Infrastructure\System\Container;
@@ -56,26 +63,124 @@ while (true) {
             echo "Choose an action (change, products, exit): ";
             $handle = fopen("php://stdin", "r");
             $serviceAction = trim(fgets($handle));
-            switch ($serviceAction){
-                case "change":
-                    echo "Insert the change: ";
-                    $handle = fopen("php://stdin", "r");
-                    $quantity = trim(fgets($handle));
-                    /**
-                     * @var AddChangeCommandHandler $handler
-                     */
-                    $handler = $container->get(AddChangeCommandHandler::class);
-                    $handler->handle(new AddChangeCommand($quantity));
-                    echo "Change added\n";
-                    break;
-                case "exit":
-                    break;
-                case "products":
-                    echo "Choose an action (add, modify): ";
-                    break;
-                default:
-                    break;
+            while($serviceAction !== "exit") {
+                switch ($serviceAction){
+                    case "change":
+                        echo "Insert the change: ";
+                        $handle = fopen("php://stdin", "r");
+                        $quantity = trim(fgets($handle));
+                        /**
+                         * @var AddChangeCommandHandler $handler
+                         */
+                        $handler = $container->get(AddChangeCommandHandler::class);
+                        $handler->handle(new AddChangeCommand($quantity));
+                        echo "Change added\n";
+                        $serviceAction = "exit";
+                        break;
+                    case "exit":
+                        break;
+                    case "products":
+                        echo "Choose an action (add, modify, cancel): ";
+                        $handle = fopen("php://stdin", "r");
+                        $productAction = trim(fgets($handle));
+                        switch ($productAction) {
+                            case "add":
+                                echo "Insert the total elements, price and name following this format -> example: (10,0.45,Bread)\n";
+                                $handle = fopen("php://stdin", "r");
+                                $insertProductData = trim(fgets($handle));
+                                $insertProductData = explode(',', $insertProductData);
+                                while(count($insertProductData) < 3) {
+                                    echo "Provide a valid input\n";
+                                    echo "Insert the total elements, price and name following this format -> example: (10,0.45,Bread)\n";
+                                    $handle = fopen("php://stdin", "r");
+                                    $insertProductData = trim(fgets($handle));
+                                    $insertProductData = explode(',', $insertProductData);
+                                }
+                                /**
+                                 * @var AddProductCommandHandler $handler
+                                 */
+                                $handler = $container->get(AddProductCommandHandler::class);
+                                $handler->handle(new AddProductCommand(
+                                    $insertProductData[2],
+                                    $insertProductData[0],
+                                    $insertProductData[1],
+                                ));
+                                break;
+                            case "modify":
+                                /**
+                                 * @var ListProducts $listProducts
+                                 */
+                                $listProducts = $container->get(ListProducts::class);
+                                $products = $listProducts->handle();
+                                $availableIds = [];
+                                echo "Select the product: \n";
+                                foreach ($products as $product) {
+                                    echo "[" . $product['id'] ."] " . $product['name'] . "\n";
+                                    $availableIds[] = $product['id'];
+                                }
+                                echo "Enter the id:";
+                                $handle = fopen("php://stdin", "r");
+                                $id = trim(fgets($handle));
+
+                                while(!in_array($id, $availableIds)) {
+                                    $handle = fopen("php://stdin", "r");
+                                    $id = trim(fgets($handle));
+                                    echo "Enter the id:";
+                                }
+                                echo "\nWhat do you want to modify? (quantity, price, cancel)";
+                                $handle = fopen("php://stdin", "r");
+                                $modifyWhat = trim(fgets($handle));
+                                while($modifyWhat !== "quantity" && $modifyWhat !== "price" && $modifyWhat !== "cancel") {
+                                    echo "\nWhat do you want to modify? (quantity, price, cancel)";
+                                    $handle = fopen("php://stdin", "r");
+                                    $modifyWhat = trim(fgets($handle));
+                                }
+
+                                switch ($modifyWhat) {
+                                    case "quantity":
+                                        echo "\nEnter the quantity: ";
+                                        $handle = fopen("php://stdin", "r");
+                                        $quantity = trim(fgets($handle));
+                                        /**
+                                         * @var SetProductQuantityCommandHandler $setProductQuantityHandler
+                                         */
+                                        $setProductQuantityHandler = $container->get(SetProductQuantityCommandHandler::class);
+                                        $setProductQuantityHandler->handle(new SetProductQuantityCommand(
+                                            $quantity,
+                                            $id
+                                        ));
+                                        break;
+                                    case "price":
+                                        echo "\nEnter the price: ";
+                                        $handle = fopen("php://stdin", "r");
+                                        $price = trim(fgets($handle));
+                                        /**
+                                         * @var SetPriceCommandHandler $setPriceHandler
+                                         */
+                                        $setPriceHandler = $container->get(SetPriceCommandHandler::class);
+                                        $setPriceHandler->handle(new SetPriceCommand(
+                                            $price,
+                                            $id
+                                        ));
+                                        break;
+                                    case "cancel":
+                                        $modifyWhat = "cancel";
+                                        break;
+                                }
+
+                                break;
+                            case "cancel":
+                                $serviceAction = "exit";
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
+
             break;
         case STOP:
             die;

@@ -9,7 +9,7 @@ use VendingMachine\Domain\ValueObject\Amount;
 class AddChangeCommandHandler
 {
     public function __construct(
-        private readonly DatabaseRepositoryInterface $databaseRepository
+        private readonly DatabaseRepositoryInterface $databaseRepository,
     ) {
     }
 
