@@ -1,0 +1,7 @@
+default:
+    suites:
+        default:
+            paths:
+                - tests/e2e/
+            contexts:
+                - App\Tests\e2e\Context\VendingMachineContext

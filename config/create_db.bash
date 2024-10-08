@@ -2,7 +2,9 @@
 
 mkdir -p db
 mkdir -p tests/db
-dbReal='{
+
+dbReal=$(cat <<EOF
+{
     "products": [
         {
             "name": "Water",
@@ -25,14 +27,20 @@ dbReal='{
     ],
     "change": 0,
     "insertedMoney": 0
-}'
+}
+EOF
+)
 
-dbTest='{
+dbTest=$(cat <<EOF
+{
     "products": [],
     "change": 0,
     "insertedMoney": 0
-}'
+}
+EOF
+)
 
 echo "$dbReal" > db/vending_machine.json
 echo "$dbTest" > tests/db/vending_machine.json
+
 echo "Database files created successfully."

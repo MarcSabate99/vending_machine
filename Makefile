@@ -29,5 +29,8 @@ test-integration:
 test-unit:
 	docker exec -it php-fpm php vendor/bin/phpunit --testsuite unit
 
+test-e2e:
+	docker exec -it php-fpm php vendor/bin/behat
+
 create-db:
 	docker exec -it php-fpm bash config/create_db.bash
