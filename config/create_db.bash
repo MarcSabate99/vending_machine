@@ -2,7 +2,6 @@
 
 mkdir -p db
 mkdir -p tests/db
-
 dbReal='{
     "products": [
         {
@@ -35,7 +34,5 @@ dbTest='{
 }'
 
 echo "$dbReal" > db/vending_machine.json
-
 echo "$dbTest" > tests/db/vending_machine.json
-
 echo "Database files created successfully."
