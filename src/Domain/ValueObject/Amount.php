@@ -2,10 +2,10 @@
 
 namespace VendingMachine\Domain\ValueObject;
 
-readonly class Coin
+readonly class Amount
 {
     public function __construct(
-        private float $value
+        private float $value,
     ) {
     }
 

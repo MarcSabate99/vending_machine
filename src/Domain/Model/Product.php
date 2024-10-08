@@ -1,17 +1,17 @@
 <?php
 
-namespace VendingMachine\Domain\Entity;
+namespace VendingMachine\Domain\Model;
 
+use VendingMachine\Domain\ValueObject\Price;
 use VendingMachine\Domain\ValueObject\ProductName;
 use VendingMachine\Domain\ValueObject\Quantity;
-use VendingMachine\Domain\ValueObject\Price;
 
 readonly class Product
 {
     public function __construct(
         private ProductName $itemName,
-        private Price       $price,
-        private Quantity    $itemQuantity
+        private Price $price,
+        private Quantity $itemQuantity,
     ) {
     }
 

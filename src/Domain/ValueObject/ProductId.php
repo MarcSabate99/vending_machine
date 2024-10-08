@@ -2,14 +2,14 @@
 
 namespace VendingMachine\Domain\ValueObject;
 
-readonly class Price
+class ProductId
 {
     public function __construct(
-        private float $value,
+        private int $value,
     ) {
     }
 
-    public function value(): float
+    public function value(): int
     {
         return $this->value;
     }

@@ -5,9 +5,8 @@ namespace VendingMachine\Domain\ValueObject;
 readonly class Quantity
 {
     public function __construct(
-        private int $value
-    )
-    {
+        private int $value,
+    ) {
     }
 
     public function value(): int
