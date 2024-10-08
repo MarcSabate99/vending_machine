@@ -77,6 +77,36 @@ class VendingMachineContext extends VendingMachineModule implements Context
     }
 
     /**
+     * @Then /^the vending machine should have "([^"]*)" as change$/
+     */
+    public function theVendingMachineShouldHaveAsChange(string $change): void
+    {
+        $vendingMachine = $this->getData();
+        Assert::assertEquals((float) $change, (float) $vendingMachine['change']);
+    }
+
+    /**
+     * @Then /^the vending machine should have "([^"]*)" product with quantity "([^"]*)" and price "([^"]*)"$/
+     */
+    public function theVendingMachineShouldHaveProductWithQuantityAndPrice(string $productName, string $quantity, string $price): void
+    {
+        $vendingMachine = $this->getData();
+        $found          = false;
+        foreach ($vendingMachine['products'] as $product) {
+            if ($product['name'] === $productName) {
+                Assert::assertEquals((float) $quantity, (float) $product['quantity']);
+                Assert::assertEquals((float) $price, (float) $product['price']);
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            Assert::fail('Product no exists');
+        }
+    }
+
+    /**
      * @AfterScenario
      */
     public function afterScenario(ScenarioScope $scope): void
@@ -106,7 +136,7 @@ class VendingMachineContext extends VendingMachineModule implements Context
         $_ENV['test'] = true;
         if (file_exists(self::DATABASE_PATH)) {
             unlink(self::DATABASE_PATH);
+            self::createDb();
         }
-        self::createDb();
     }
 }

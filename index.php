@@ -125,13 +125,13 @@ while (true) {
                     $productAction = trim(fgets($handle));
                     switch ($productAction) {
                         case "add":
-                            echo "Insert the total elements, price and name following this format -> example: (10,0.45,Bread)\n";
+                            echo "Insert the total elements, price and name following this format -> example: (10,0.45,Bread): ";
                             $handle = fopen("php://stdin", "r");
                             $insertProductData = trim(fgets($handle));
                             $insertProductData = explode(',', $insertProductData);
                             while(count($insertProductData) < 3) {
                                 echo "Provide a valid input\n";
-                                echo "Insert the total elements, price and name following this format -> example: (10,0.45,Bread)\n";
+                                echo "Insert the total elements, price and name following this format -> example: (10,0.45,Bread): ";
                                 $handle = fopen("php://stdin", "r");
                                 $insertProductData = trim(fgets($handle));
                                 $insertProductData = explode(',', $insertProductData);
@@ -145,6 +145,7 @@ while (true) {
                                 $insertProductData[0],
                                 $insertProductData[1],
                             ));
+                            echo "Product added\n";
                             break;
                         case "modify":
                             /**
@@ -158,27 +159,27 @@ while (true) {
                                 echo "[" . $product['id'] ."] " . $product['name'] . "\n";
                                 $availableIds[] = $product['id'];
                             }
-                            echo "Enter the id:";
+                            echo "Enter the id: ";
                             $handle = fopen("php://stdin", "r");
                             $id = trim(fgets($handle));
 
                             while(!in_array($id, $availableIds)) {
+                                echo "Enter the id: ";
                                 $handle = fopen("php://stdin", "r");
                                 $id = trim(fgets($handle));
-                                echo "Enter the id:";
                             }
-                            echo "\nWhat do you want to modify? (quantity, price, cancel): \n";
+                            echo "What do you want to modify? (quantity, price, cancel): ";
                             $handle = fopen("php://stdin", "r");
                             $modifyWhat = trim(fgets($handle));
                             while($modifyWhat !== "quantity" && $modifyWhat !== "price" && $modifyWhat !== "cancel") {
-                                echo "\nWhat do you want to modify? (quantity, price, cancel): \n";
+                                echo "What do you want to modify? (quantity, price, cancel): ";
                                 $handle = fopen("php://stdin", "r");
                                 $modifyWhat = trim(fgets($handle));
                             }
 
                             switch ($modifyWhat) {
                                 case "quantity":
-                                    echo "\nEnter the quantity: ";
+                                    echo "Enter the quantity: ";
                                     $handle = fopen("php://stdin", "r");
                                     $quantity = trim(fgets($handle));
                                     /**
@@ -189,9 +190,10 @@ while (true) {
                                         $quantity,
                                         $id
                                     ));
+                                    echo "Quantity modified\n";
                                     break;
                                 case "price":
-                                    echo "\nEnter the price: ";
+                                    echo "Enter the price: ";
                                     $handle = fopen("php://stdin", "r");
                                     $price = trim(fgets($handle));
                                     /**
@@ -202,6 +204,7 @@ while (true) {
                                         $price,
                                         $id
                                     ));
+                                    echo "Price modified\n";
                                     break;
                             }
 
