@@ -2,11 +2,13 @@
 
 use VendingMachine\Application\Command\AddChangeCommand;
 use VendingMachine\Application\Command\AddProductCommand;
+use VendingMachine\Application\Command\GetProductCommand;
 use VendingMachine\Application\Command\InsertCoinCommand;
 use VendingMachine\Application\Command\SetPriceCommand;
 use VendingMachine\Application\Command\SetProductQuantityCommand;
 use VendingMachine\Application\Handler\AddChangeCommandHandler;
 use VendingMachine\Application\Handler\AddProductCommandHandler;
+use VendingMachine\Application\Handler\GetProductCommandHandler;
 use VendingMachine\Application\Handler\InsertCoinCommandHandler;
 use VendingMachine\Application\Handler\SetPriceCommandHandler;
 use VendingMachine\Application\Handler\SetProductQuantityCommandHandler;
@@ -57,7 +59,30 @@ while (true) {
             echo "Money returned\n";
             break;
         case GET:
-            echo "get";
+            echo "Insert the quantity and the product name example -> (10,SODA): ";
+            $handle = fopen("php://stdin", "r");
+            $getData = trim(fgets($handle));
+            $getData = explode(',', $getData);
+            while(count($getData) < 2) {
+                echo "Provide a valid input\n";
+                echo "Insert the quantity and the product name example -> (10,SODA): ";
+                $handle = fopen("php://stdin", "r");
+                $getData = trim(fgets($handle));
+                $getData = explode(',', $getData);
+            }
+            try {
+                /**
+                 * @var GetProductCommandHandler $getHandler
+                 */
+                $getHandler = $container->get(GetProductCommandHandler::class);
+                $returnedAmount = $getHandler->handle(
+                    new GetProductCommand($getData[0],$getData[1])
+                );
+                echo "Sold product: " . $getData[1] . "\n";
+                echo "Returned money: " . $returnedAmount->value() . "\n";
+            } catch (Throwable $exception) {
+                echo $exception->getMessage() . "\n";
+            }
             break;
         case SERVICE:
             echo "Choose an action (change, products, exit): ";
@@ -180,7 +205,6 @@ while (true) {
                         break;
                 }
             }
-
             break;
         case STOP:
             die;

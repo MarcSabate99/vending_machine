@@ -14,8 +14,7 @@ install:
 	docker-compose build
 	docker-compose up --detach
 	docker exec -it php-fpm composer install
-	docker exec -it php-fpm mkdir -p db
-	docker exec -it php-fpm mkdir -p tests/db
+	docker exec -it php-fpm bash config/create_db.bash
 
 run:
 	docker exec -it php-fpm php index.php
@@ -29,3 +28,6 @@ test-integration:
 
 test-unit:
 	docker exec -it php-fpm php vendor/bin/phpunit --testsuite unit
+
+create-db:
+	docker exec -it php-fpm bash config/create_db.bash

@@ -2,7 +2,7 @@
 
 namespace VendingMachine\Domain\Service;
 
-use VendingMachine\Domain\Exception\InvalidCoinProvided;
+use VendingMachine\Domain\Exception\InvalidCoinProvidedException;
 
 class InsertedMoneyValidator
 {
@@ -11,7 +11,7 @@ class InsertedMoneyValidator
     public function handle(float $quantity): void
     {
         if (!in_array($quantity, self::VALID_COINS)) {
-            throw InvalidCoinProvided::ofInvalidNumber();
+            throw InvalidCoinProvidedException::ofInvalidNumber(self::VALID_COINS);
         }
     }
 }

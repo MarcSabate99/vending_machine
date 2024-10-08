@@ -5,26 +5,17 @@ namespace App\Tests\integration\Infrastructure\Repository;
 use App\Tests\ObjectMother\AmountMother;
 use App\Tests\ObjectMother\PriceMother;
 use App\Tests\ObjectMother\ProductIdMother;
+use App\Tests\ObjectMother\ProductMother;
 use App\Tests\ObjectMother\ProductNameMother;
 use App\Tests\ObjectMother\QuantityMother;
 use PHPUnit\Framework\TestCase;
+use VendingMachine\Domain\Entity\VendingMachine;
 use VendingMachine\Infrastructure\Repository\InMemoryRepository;
 
 class InMemoryRepositoryTest extends TestCase
 {
     private InMemoryRepository $inMemoryRepository;
     private const DATABASE_PATH = 'tests/db/vending_machine.json';
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        if (file_exists(self::DATABASE_PATH)) {
-            unlink(self::DATABASE_PATH);
-        }
-
-        $this->inMemoryRepository = new InMemoryRepository(self::DATABASE_PATH);
-    }
 
     public function testInsertCoin()
     {
@@ -158,6 +149,108 @@ class InMemoryRepositoryTest extends TestCase
         $this->assertEquals(0.65, $data['products'][0]['price']);
     }
 
+    public function testGetProductByName()
+    {
+        $this->inMemoryRepository->addProduct(
+            PriceMother::create(0.65),
+            ProductNameMother::create('Bread'),
+            QuantityMother::create(15)
+        );
+
+        $this->inMemoryRepository->addProduct(
+            PriceMother::create(0.65),
+            ProductNameMother::create('Water'),
+            QuantityMother::create(2)
+        );
+
+        $data = $this->readDatabase();
+        $this->assertNotNull($data);
+        $this->assertCount(2, $data['products']);
+
+        $product = $this->inMemoryRepository->getProductByName(ProductNameMother::create('Bread'));
+
+        $this->assertNotNull($product);
+        $this->assertEquals(0.65, $product->price()->value());
+        $this->assertEquals(15, $product->itemQuantity()->value());
+
+        $product = $this->inMemoryRepository->getProductByName(ProductNameMother::create('Water'));
+
+        $this->assertNotNull($product);
+        $this->assertEquals(0.65, $product->price()->value());
+        $this->assertEquals(2, $product->itemQuantity()->value());
+    }
+
+    public function testGetInsertedMoneyAndChange()
+    {
+        $this->inMemoryRepository->insertAmount(AmountMother::create(1));
+        $this->inMemoryRepository->insertAmount(AmountMother::create(1));
+        $this->inMemoryRepository->insertAmount(AmountMother::create(1));
+
+        $data = $this->readDatabase();
+        $this->assertNotNull($data);
+        $this->assertEquals(3, $data['insertedMoney']);
+
+        $this->inMemoryRepository->addChange(AmountMother::create(60));
+        $data = $this->readDatabase();
+        $this->assertEquals(60, $data['change']);
+
+        $insertedMoneyAndChange = $this->inMemoryRepository->getInsertedMoneyAndChange();
+        $this->assertNotNull($insertedMoneyAndChange);
+        $this->assertIsArray($insertedMoneyAndChange);
+        $this->assertEquals(3, $insertedMoneyAndChange['insertedMoney']->value());
+        $this->assertEquals(60, $insertedMoneyAndChange['change']->value());
+    }
+
+    public function testSellProduct()
+    {
+        $this->inMemoryRepository->addProduct(
+            PriceMother::create(2),
+            ProductNameMother::create('Bread'),
+            QuantityMother::create(15)
+        );
+
+        $this->inMemoryRepository->insertAmount(AmountMother::create(1));
+        $this->inMemoryRepository->insertAmount(AmountMother::create(1));
+        $this->inMemoryRepository->insertAmount(AmountMother::create(1));
+        $this->inMemoryRepository->insertAmount(AmountMother::create(1));
+        $this->inMemoryRepository->addChange(AmountMother::create(5));
+
+        $data = $this->readDatabase();
+        $this->assertNotNull($data);
+        $this->assertCount(1, $data['products']);
+
+        $this->inMemoryRepository->sellProduct(
+            ProductMother::create('Bread', 2, 15),
+            QuantityMother::create(1),
+            AmountMother::create(2)
+        );
+
+        $data = $this->readDatabase();
+
+        $this->assertNotNull($data);
+        $this->assertCount(1, $data['products']);
+        $this->assertEquals(14, $data['products'][0]['quantity']);
+        $this->assertEquals(3, $data['change']);
+        $this->assertEquals(0, $data['insertedMoney']);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        if (!file_exists(self::DATABASE_PATH)) {
+            $this->createDb();
+        }
+
+        $this->inMemoryRepository = new InMemoryRepository(self::DATABASE_PATH);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        unlink(self::DATABASE_PATH);
+    }
+
     private function readDatabase(): ?array
     {
         $content = file_get_contents(self::DATABASE_PATH);
@@ -165,9 +258,15 @@ class InMemoryRepositoryTest extends TestCase
         return json_decode($content, true);
     }
 
-    protected function tearDown(): void
+    private function createDb(): void
     {
-        parent::tearDown();
-        unlink(self::DATABASE_PATH);
+        $vendingMachine     = new VendingMachine([], 0, 0);
+        $vendingMachineJson = json_encode([
+            'products'      => $vendingMachine->products(),
+            'change'        => $vendingMachine->change(),
+            'insertedMoney' => $vendingMachine->insertedMoney(),
+        ], JSON_PRETTY_PRINT);
+
+        file_put_contents(self::DATABASE_PATH, $vendingMachineJson);
     }
 }

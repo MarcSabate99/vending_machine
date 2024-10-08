@@ -18,6 +18,19 @@ return (new PhpCsFixer\Config())
         'declare_equal_normalize' => true,
         'function_typehint_space' => true,
         'single_quote' => true,
+        'ordered_class_elements' => [
+            'order' => [
+                'public',
+                'protected',
+                'private',
+                'constant_public',
+                'constant_protected',
+                'constant_private',
+                'method_public',
+                'method_protected',
+                'method_private',
+            ],
+        ],
     ])
     ->setFinder($finder)
 ;

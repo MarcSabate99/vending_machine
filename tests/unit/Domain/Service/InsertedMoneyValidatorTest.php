@@ -4,24 +4,17 @@ namespace App\Tests\unit\Domain\Service;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use VendingMachine\Domain\Exception\InvalidCoinProvided;
+use VendingMachine\Domain\Exception\InvalidCoinProvidedException;
 use VendingMachine\Domain\Service\InsertedMoneyValidator;
 
 class InsertedMoneyValidatorTest extends TestCase
 {
     private InsertedMoneyValidator $insertedMoneyValidator;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->insertedMoneyValidator = new InsertedMoneyValidator();
-    }
-
     #[DataProvider('invalidInsertedMoney')]
     public function testWithInvalidInsertedMoney(float $val)
     {
-        $this->expectException(InvalidCoinProvided::class);
+        $this->expectException(InvalidCoinProvidedException::class);
         $this->insertedMoneyValidator->handle($val);
     }
 
@@ -58,5 +51,12 @@ class InsertedMoneyValidatorTest extends TestCase
             'right corner case of 1'    => [1.01],
             'random number'             => [23],
         ];
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->insertedMoneyValidator = new InsertedMoneyValidator();
     }
 }

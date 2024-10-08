@@ -2,17 +2,17 @@
 
 namespace VendingMachine\Application\Command;
 
-readonly class SetProductQuantityCommand
+readonly class GetProductCommand
 {
     public function __construct(
         private int $quantity,
-        private int $id,
+        private string $productName,
     ) {
     }
 
-    public function id(): int
+    public function productName(): string
     {
-        return $this->id;
+        return $this->productName;
     }
 
     public function quantity(): int

@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Tests\ObjectMother;
+
+use VendingMachine\Domain\Model\Product;
+
+class ProductMother
+{
+    public static function create(string $productName, float $price, int $quantity): Product
+    {
+        return new Product(
+            ProductNameMother::create($productName),
+            PriceMother::create($price),
+            QuantityMother::create($quantity)
+        );
+    }
+}

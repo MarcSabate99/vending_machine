@@ -6,7 +6,7 @@ use App\Tests\ObjectMother\AmountMother;
 use PHPUnit\Framework\TestCase;
 use VendingMachine\Application\Command\InsertCoinCommand;
 use VendingMachine\Application\Handler\InsertCoinCommandHandler;
-use VendingMachine\Domain\Exception\InvalidCoinProvided;
+use VendingMachine\Domain\Exception\InvalidCoinProvidedException;
 use VendingMachine\Domain\Interface\DatabaseRepositoryInterface;
 use VendingMachine\Domain\Service\InsertedMoneyValidator;
 use VendingMachine\Infrastructure\Repository\InMemoryRepository;
@@ -16,19 +16,6 @@ class InsertCoinCommandHandlerTest extends TestCase
     private InsertCoinCommandHandler $coinCommandHandler;
     private DatabaseRepositoryInterface $databaseRepository;
     private InsertedMoneyValidator $insertedMoneyValidator;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->databaseRepository     = $this->createMock(InMemoryRepository::class);
-        $this->insertedMoneyValidator = new InsertedMoneyValidator();
-
-        $this->coinCommandHandler = new InsertCoinCommandHandler(
-            $this->databaseRepository,
-            $this->insertedMoneyValidator
-        );
-    }
 
     public function testWithMultipleValidCoins()
     {
@@ -44,7 +31,7 @@ class InsertCoinCommandHandlerTest extends TestCase
 
     public function testWithMultipleProvidedButOneInvalidCoin()
     {
-        $this->expectException(InvalidCoinProvided::class);
+        $this->expectException(InvalidCoinProvidedException::class);
 
         $this->databaseRepository
             ->expects($this->never())
@@ -69,7 +56,7 @@ class InsertCoinCommandHandlerTest extends TestCase
 
     public function testWithOneInvalidCoinAsString()
     {
-        $this->expectException(InvalidCoinProvided::class);
+        $this->expectException(InvalidCoinProvidedException::class);
 
         $this->databaseRepository
             ->expects($this->never())
@@ -94,7 +81,7 @@ class InsertCoinCommandHandlerTest extends TestCase
 
     public function testWithOneInvalidCoinAsFloat()
     {
-        $this->expectException(InvalidCoinProvided::class);
+        $this->expectException(InvalidCoinProvidedException::class);
 
         $this->databaseRepository
             ->expects($this->never())
@@ -102,6 +89,19 @@ class InsertCoinCommandHandlerTest extends TestCase
 
         $this->coinCommandHandler->handle(
             new InsertCoinCommand(0.31)
+        );
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->databaseRepository     = $this->createMock(InMemoryRepository::class);
+        $this->insertedMoneyValidator = new InsertedMoneyValidator();
+
+        $this->coinCommandHandler = new InsertCoinCommandHandler(
+            $this->databaseRepository,
+            $this->insertedMoneyValidator
         );
     }
 }

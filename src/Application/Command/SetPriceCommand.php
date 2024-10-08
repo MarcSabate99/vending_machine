@@ -2,7 +2,7 @@
 
 namespace VendingMachine\Application\Command;
 
-class SetPriceCommand
+readonly class SetPriceCommand
 {
     public function __construct(
         private float $price,

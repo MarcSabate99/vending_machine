@@ -2,6 +2,7 @@
 
 namespace VendingMachine\Domain\Interface;
 
+use VendingMachine\Domain\Model\Product;
 use VendingMachine\Domain\ValueObject\Amount;
 use VendingMachine\Domain\ValueObject\Price;
 use VendingMachine\Domain\ValueObject\ProductId;
@@ -23,4 +24,10 @@ interface DatabaseRepositoryInterface
     public function setProductQuantity(Quantity $quantity, ProductId $productId);
 
     public function setProductPrice(Price $price, ProductId $productId);
+
+    public function getProductByName(ProductName $productName): ?Product;
+
+    public function sellProduct(Product $product, Quantity $quantity, Amount $change);
+
+    public function getInsertedMoneyAndChange();
 }

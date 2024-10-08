@@ -4,7 +4,7 @@ namespace VendingMachine\Application\Service;
 
 use VendingMachine\Domain\Interface\DatabaseRepositoryInterface;
 
-class ListProducts
+readonly class ListProducts
 {
     public function __construct(
         private DatabaseRepositoryInterface $databaseRepository,
