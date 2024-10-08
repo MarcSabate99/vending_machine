@@ -19,27 +19,45 @@ class VendingMachineContext extends VendingMachineModule implements Context
     {
         $this->input   = new InputStream();
         $this->process = new Process(['php', 'index.php']);
-        $this->process->setTimeout(10);
+        $this->process->setTimeout(5);
         $this->process->setInput($this->input);
         $this->process->start();
     }
 
     /**
-     * @When /^I input "([^"]*)" and wait to "([^"]*)"$/
+     * @When /^I wait to "([^"]*)" and I input "([^"]*)"$/
      */
-    public function iInputAndWaitTo(string $input, string $question): void
+    public function iInputAndWaitTo(string $question, string $input): void
     {
         $this->process->waitUntil(function ($type, $output) use ($question): bool {
-            return $output === $question;
+            return str_contains($output, $question);
         });
 
         $this->input->write($input . "\n");
     }
 
     /**
-     * @Then I should see :expectedOutput
+     * @When /^I input "([^"]*)"$/
      */
-    public function iShouldSee(string $expectedOutput): void
+    public function iInput(string $input): void
+    {
+        $this->input->write($input . "\n");
+    }
+
+    /**
+     * @Then /^I should see "([^"]*)" and continue$/
+     */
+    public function iShouldSeeAndContinue($expectedOutput): void
+    {
+        $this->process->waitUntil(function ($type, $output) use ($expectedOutput): bool {
+            return str_contains($output, $expectedOutput);
+        });
+    }
+
+    /**
+     * @Then /^I should see "([^"]*)" and ends$/
+     */
+    public function iShouldSeeAndEnds($expectedOutput): void
     {
         $this->process->waitUntil(function ($type, $output) use ($expectedOutput): bool {
             return str_contains($output, $expectedOutput);
