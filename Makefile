@@ -11,7 +11,7 @@ restart:
 	docker-compose down && docker-compose up --detach
 
 install:
-	docker-compose build
+	docker-compose build --no-cache
 	docker-compose up --detach
 	docker exec -it php-fpm composer install
 	docker exec -it php-fpm bash config/create_db.bash

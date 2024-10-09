@@ -9,6 +9,35 @@ This is a vending machine CLI application.
   * Manage products
     * Add product
     * Modify existing product
+### Requirements to install the app
+* Download docker (https://docs.docker.com/get-started/get-docker/)
+
+### How to install the application
+Clone the project:
+```
+git clone https://github.com/MarcSabate99/vending_machine.git
+```
+Execute this command in the root path:
+```
+make install
+```
+### How to run the tests
+To run unit test run in the root path:
+```
+make test-unit
+```
+To run integration test run in the root path:
+```
+make test-integration
+```
+To run e2e test run in the root path:
+```
+make test-e2e
+```
+To run all tests run in the root path:
+```
+make test
+```
 
 ### How works
 You can run the application using:
@@ -82,34 +111,5 @@ Enter the quantity:
 If you select price:
 ```
 Enter the price:
-```
-### Requirements to install the app
-* Download docker (https://docs.docker.com/get-started/get-docker/)
-
-### How to install the application
-Clone the project:
-```
-git clone https://github.com/MarcSabate99/vending_machine.git
-```
-Execute this command in the root path:
-```
-make install
-```
-### How to run the tests
-To run unit test run in the root path:
-```
-make test-unit
-```
-To run integration test run in the root path:
-```
-make test-integration
-```
-To run e2e test run in the root path:
-```
-make test-e2e
-```
-To run all tests run in the root path:
-```
-make test
 ```
 
