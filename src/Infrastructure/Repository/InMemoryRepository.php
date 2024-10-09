@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VendingMachine\Infrastructure\Repository;
 
 use VendingMachine\Domain\Interface\DatabaseRepositoryInterface;

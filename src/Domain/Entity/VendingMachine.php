@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VendingMachine\Domain\Entity;
 
 readonly class VendingMachine

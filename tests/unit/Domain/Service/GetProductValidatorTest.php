@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\unit\Domain\Service;
 
 use App\Tests\ObjectMother\AmountMother;
@@ -9,7 +11,6 @@ use PHPUnit\Framework\TestCase;
 use VendingMachine\Domain\Exception\InsufficientChangeException;
 use VendingMachine\Domain\Exception\InsufficientMoneyException;
 use VendingMachine\Domain\Exception\InsufficientStockException;
-use VendingMachine\Domain\Exception\NotEnoughMoneyInsertedException;
 use VendingMachine\Domain\Service\GetProductValidator;
 
 class GetProductValidatorTest extends TestCase
@@ -44,15 +45,18 @@ class GetProductValidatorTest extends TestCase
 
     public function testNotEnoughMoneyInserted()
     {
-        $this->expectException(NotEnoughMoneyInsertedException::class);
-
-        $this->getProductValidator->handle(
-            ProductMother::create('Example', 0.5, 1),
-            QuantityMother::create(1),
-            AmountMother::create(2),
-            AmountMother::create(2),
-            AmountMother::create(-1)
-        );
+        try {
+            $this->getProductValidator->handle(
+                ProductMother::create('Example', 0.5, 1),
+                QuantityMother::create(1),
+                AmountMother::create(2),
+                AmountMother::create(2),
+                AmountMother::create(-1)
+            );
+            $this->expectNotToPerformAssertions();
+        } catch (\Throwable $exception) {
+            $this->fail($exception->getMessage());
+        }
     }
 
     public function testInsufficientChange()

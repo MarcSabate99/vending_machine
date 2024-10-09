@@ -1,21 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\integration\Infrastructure\Repository;
 
+use App\Tests\integration\Module\VendingMachineIntegrationModule;
 use App\Tests\ObjectMother\AmountMother;
 use App\Tests\ObjectMother\PriceMother;
 use App\Tests\ObjectMother\ProductIdMother;
 use App\Tests\ObjectMother\ProductMother;
 use App\Tests\ObjectMother\ProductNameMother;
 use App\Tests\ObjectMother\QuantityMother;
-use PHPUnit\Framework\TestCase;
-use VendingMachine\Domain\Entity\VendingMachine;
 use VendingMachine\Infrastructure\Repository\InMemoryRepository;
 
-class InMemoryRepositoryTest extends TestCase
+class InMemoryRepositoryTest extends VendingMachineIntegrationModule
 {
     private InMemoryRepository $inMemoryRepository;
-    private const DATABASE_PATH = 'tests/db/vending_machine.json';
 
     public function testInsertCoin()
     {
@@ -242,31 +242,12 @@ class InMemoryRepositoryTest extends TestCase
             $this->createDb();
         }
 
-        $this->inMemoryRepository = new InMemoryRepository(self::DATABASE_PATH);
+        $this->inMemoryRepository = self::getInMemoryRepository();
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
         unlink(self::DATABASE_PATH);
-    }
-
-    private function readDatabase(): ?array
-    {
-        $content = file_get_contents(self::DATABASE_PATH);
-
-        return json_decode($content, true);
-    }
-
-    private function createDb(): void
-    {
-        $vendingMachine     = new VendingMachine([], 0, 0);
-        $vendingMachineJson = json_encode([
-            'products'      => $vendingMachine->products(),
-            'change'        => $vendingMachine->change(),
-            'insertedMoney' => $vendingMachine->insertedMoney(),
-        ], JSON_PRETTY_PRINT);
-
-        file_put_contents(self::DATABASE_PATH, $vendingMachineJson);
     }
 }

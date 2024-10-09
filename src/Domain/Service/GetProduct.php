@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VendingMachine\Domain\Service;
 
 use VendingMachine\Domain\Interface\DatabaseRepositoryInterface;
@@ -22,7 +24,6 @@ class GetProduct
         Amount $currentChange,
     ): Amount {
         $change = new Amount($insertedMoney->value() - ($product->price()->value() * $quantity->value()));
-
         $this->getProductValidator->handle(
             $product,
             $quantity,
@@ -30,9 +31,8 @@ class GetProduct
             $currentChange,
             $change
         );
-
         $this->databaseRepository->sellProduct($product, $quantity, $change);
 
-        return $change;
+        return new Amount((float) number_format($change->value(), 2, '.', ''));
     }
 }
