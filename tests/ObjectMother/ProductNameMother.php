@@ -6,7 +6,7 @@ namespace App\Tests\ObjectMother;
 
 use VendingMachine\Domain\ValueObject\ProductName;
 
-class ProductNameMother
+readonly class ProductNameMother
 {
     public static function create(string $value): ProductName
     {

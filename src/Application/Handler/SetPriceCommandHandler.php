@@ -9,10 +9,10 @@ use VendingMachine\Domain\Interface\DatabaseRepositoryInterface;
 use VendingMachine\Domain\ValueObject\Price;
 use VendingMachine\Domain\ValueObject\ProductId;
 
-class SetPriceCommandHandler
+readonly class SetPriceCommandHandler
 {
     public function __construct(
-        private readonly DatabaseRepositoryInterface $databaseRepository,
+        private DatabaseRepositoryInterface $databaseRepository,
     ) {
     }
 

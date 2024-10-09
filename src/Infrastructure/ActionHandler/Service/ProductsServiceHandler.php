@@ -16,7 +16,7 @@ readonly class ProductsServiceHandler
     ) {
     }
 
-    public function handle(): string
+    public function handle(): void
     {
         echo 'Choose an action (add, modify, cancel): ';
         $handle        = fopen('php://stdin', 'r');
@@ -29,12 +29,8 @@ readonly class ProductsServiceHandler
                 $this->modifyProductServiceHandler->handle();
                 break;
             case self::CANCEL:
-                return 'exit';
-                break;
             default:
                 break;
         }
-
-        return '';
     }
 }

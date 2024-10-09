@@ -21,7 +21,7 @@ class GetProductTest extends TestCase
 
     public function testSuccessHandle()
     {
-        $product       = ProductMother::create('Example', 0.5, 1);
+        $product       = ProductMother::create('Example', 0.5, 1, 1);
         $quantity      = QuantityMother::create(1);
         $insertedMoney = AmountMother::create(4);
         $currentChange = AmountMother::create(10);

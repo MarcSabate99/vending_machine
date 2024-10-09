@@ -11,6 +11,7 @@ use Behat\Behat\Hook\Scope\ScenarioScope;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\Process\InputStream;
 use Symfony\Component\Process\Process;
+use VendingMachine\Domain\Model\Product;
 
 class VendingMachineContext extends VendingMachineModule implements Context
 {
@@ -74,8 +75,8 @@ class VendingMachineContext extends VendingMachineModule implements Context
      */
     public function theVendingMachineShouldHaveAsInsertedMoney(string $expectedInsertedMoney): void
     {
-        $vendingMachine = $this->getData();
-        Assert::assertEquals((float) $expectedInsertedMoney, (float) $vendingMachine['insertedMoney']);
+        $vendingMachine = $this->getVendingMachine();
+        Assert::assertEquals((float) $expectedInsertedMoney, $vendingMachine->insertedMoney()->value());
     }
 
     /**
@@ -83,8 +84,8 @@ class VendingMachineContext extends VendingMachineModule implements Context
      */
     public function theVendingMachineShouldHaveAsChange(string $change): void
     {
-        $vendingMachine = $this->getData();
-        Assert::assertEquals((float) $change, (float) $vendingMachine['change']);
+        $vendingMachine = $this->getVendingMachine();
+        Assert::assertEquals((float) $change, $vendingMachine->change()->value());
     }
 
     /**
@@ -92,12 +93,15 @@ class VendingMachineContext extends VendingMachineModule implements Context
      */
     public function theVendingMachineShouldHaveProductWithQuantityAndPrice(string $productName, string $quantity, string $price): void
     {
-        $vendingMachine = $this->getData();
+        $vendingMachine = $this->getVendingMachine();
         $found          = false;
-        foreach ($vendingMachine['products'] as $product) {
-            if ($product['name'] === $productName) {
-                Assert::assertEquals((float) $quantity, (float) $product['quantity']);
-                Assert::assertEquals((float) $price, (float) $product['price']);
+        /**
+         * @var Product $product
+         */
+        foreach ($vendingMachine->products() as $product) {
+            if ($product->itemName()->value() === $productName) {
+                Assert::assertEquals((int) $quantity, (int) $product->itemQuantity()->value());
+                Assert::assertEquals((float) $price, (float) $product->price()->value());
                 $found = true;
                 break;
             }
@@ -111,13 +115,16 @@ class VendingMachineContext extends VendingMachineModule implements Context
     /**
      * @Then /^the vending machine should have "([^"]*)" as quantity of "([^"]*)"$/
      */
-    public function theVendingMachineShouldHaveAsQuantityOf($quantity, $productName): void
+    public function theVendingMachineShouldHaveAsQuantityOf(string $quantity, string $productName): void
     {
-        $vendingMachine = $this->getData();
+        $vendingMachine = $this->getVendingMachine();
         $found          = false;
-        foreach ($vendingMachine['products'] as $product) {
-            if ($product['name'] === $productName) {
-                Assert::assertEquals((float) $quantity, (float) $product['quantity']);
+        /**
+         * @var Product $product
+         */
+        foreach ($vendingMachine->products() as $product) {
+            if ($product->itemName()->value() === $productName) {
+                Assert::assertEquals((int) $quantity, $product->itemQuantity()->value());
                 $found = true;
                 break;
             }
@@ -133,8 +140,8 @@ class VendingMachineContext extends VendingMachineModule implements Context
      */
     public function theVendingMachineShouldHaveAsAChange($expectedChange): void
     {
-        $vendingMachine = $this->getData();
-        Assert::assertEquals((float) $expectedChange, (float) $vendingMachine['change']);
+        $vendingMachine = $this->getVendingMachine();
+        Assert::assertEquals((float) $expectedChange, (float) $vendingMachine->change()->value());
     }
 
     /**

@@ -16,13 +16,13 @@ readonly class GetActionHandler
 
     public function handle(): void
     {
-        echo 'Insert the quantity and the product name, example -> (10,SODA): ';
+        echo 'Insert the quantity and the product name, example -> (10,Soda): ';
         $handle  = fopen('php://stdin', 'r');
         $getData = trim(fgets($handle));
         $getData = explode(',', $getData);
         while (count($getData) < 2) {
             echo "Provide a valid input\n";
-            echo 'Insert the quantity and the product name, example -> (10,SODA): ';
+            echo 'Insert the quantity and the product name, example -> (10,Soda): ';
             $handle  = fopen('php://stdin', 'r');
             $getData = trim(fgets($handle));
             $getData = explode(',', $getData);
@@ -30,7 +30,7 @@ readonly class GetActionHandler
 
         while (!is_numeric($getData[0])) {
             echo "Provide a valid input\n";
-            echo 'Insert the quantity and the product name, example -> (10,SODA): ';
+            echo 'Insert the quantity and the product name, example -> (10,Soda): ';
             $handle  = fopen('php://stdin', 'r');
             $getData = trim(fgets($handle));
             $getData = explode(',', $getData);

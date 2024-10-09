@@ -20,29 +20,31 @@ class InMemoryRepositoryTest extends VendingMachineIntegrationModule
     public function testInsertCoin()
     {
         $this->inMemoryRepository->insertAmount(AmountMother::create(1));
-        $data = $this->readDatabase();
-        $this->assertNotNull($data);
-        $this->assertEquals(1, $data['insertedMoney']);
+        $vendingMachine = $this->getVendingMachine();
+        $this->assertNotNull($vendingMachine);
+        $this->assertEquals(1, $vendingMachine->insertedMoney()->value());
     }
 
     public function testInsertCoinAndReturn()
     {
         $this->inMemoryRepository->insertAmount(AmountMother::create(1));
-        $data = $this->readDatabase();
-        $this->assertNotNull($data);
-        $this->assertEquals(1, $data['insertedMoney']);
+        $vendingMachine = $this->getVendingMachine();
+
+        $this->assertNotNull($vendingMachine);
+        $this->assertEquals(1, $vendingMachine->insertedMoney()->value());
         $this->inMemoryRepository->returnInsertedCoins();
-        $data = $this->readDatabase();
-        $this->assertNotNull($data);
-        $this->assertEquals(0, $data['insertedMoney']);
+
+        $vendingMachine = $this->getVendingMachine();
+        $this->assertNotNull($vendingMachine);
+        $this->assertEquals(0, $vendingMachine->insertedMoney()->value());
     }
 
     public function testAddChange()
     {
         $this->inMemoryRepository->addChange(AmountMother::create(60));
-        $data = $this->readDatabase();
-        $this->assertNotNull($data);
-        $this->assertEquals(60, $data['change']);
+        $vendingMachine = $this->getVendingMachine();
+        $this->assertNotNull($vendingMachine);
+        $this->assertEquals(60, $vendingMachine->change()->value());
     }
 
     public function testAddProducts()
@@ -52,13 +54,13 @@ class InMemoryRepositoryTest extends VendingMachineIntegrationModule
             ProductNameMother::create('Bread'),
             QuantityMother::create(15)
         );
-        $data = $this->readDatabase();
-        $this->assertNotNull($data);
-        $this->assertEquals(1, $data['products'][0]['id']);
-        $this->assertCount(1, $data['products']);
-        $this->assertEquals('Bread', $data['products'][0]['name']);
-        $this->assertEquals(15, $data['products'][0]['quantity']);
-        $this->assertEquals(0.65, $data['products'][0]['price']);
+        $vendingMachine = $this->getVendingMachine();
+        $this->assertNotNull($vendingMachine);
+        $this->assertEquals(1, $vendingMachine->products()[0]->productId()->value());
+        $this->assertCount(1, $vendingMachine->products());
+        $this->assertEquals('Bread', $vendingMachine->products()[0]->itemName()->value());
+        $this->assertEquals(15, $vendingMachine->products()[0]->itemQuantity()->value());
+        $this->assertEquals(0.65, $vendingMachine->products()[0]->price()->value());
 
         $this->inMemoryRepository->addProduct(
             PriceMother::create(0.05),
@@ -66,15 +68,15 @@ class InMemoryRepositoryTest extends VendingMachineIntegrationModule
             QuantityMother::create(35)
         );
 
-        $data = $this->readDatabase();
+        $vendingMachine = $this->getVendingMachine();
 
-        $this->assertNotNull($data);
-        $this->assertEquals(1, $data['products'][0]['id']);
-        $this->assertEquals(2, $data['products'][1]['id']);
-        $this->assertCount(2, $data['products']);
-        $this->assertEquals('Cherry', $data['products'][1]['name']);
-        $this->assertEquals(35, $data['products'][1]['quantity']);
-        $this->assertEquals(0.05, $data['products'][1]['price']);
+        $this->assertNotNull($vendingMachine);
+        $this->assertEquals(1, $vendingMachine->products()[0]->productId()->value());
+        $this->assertEquals(2, $vendingMachine->products()[1]->productId()->value());
+        $this->assertCount(2, $vendingMachine->products());
+        $this->assertEquals('Cherry', $vendingMachine->products()[1]->itemName()->value());
+        $this->assertEquals(35, $vendingMachine->products()[1]->itemQuantity()->value());
+        $this->assertEquals(0.05, $vendingMachine->products()[1]->price()->value());
     }
 
     public function testSetProductPrice()
@@ -89,28 +91,30 @@ class InMemoryRepositoryTest extends VendingMachineIntegrationModule
             ProductNameMother::create('Example'),
             QuantityMother::create(25)
         );
-        $data = $this->readDatabase();
-        $this->assertNotNull($data);
-        $this->assertCount(2, $data['products']);
 
-        $this->assertEquals(1, $data['products'][0]['id']);
-        $this->assertEquals('Bread', $data['products'][0]['name']);
-        $this->assertEquals(15, $data['products'][0]['quantity']);
-        $this->assertEquals(0.65, $data['products'][0]['price']);
+        $vendingMachine = $this->getVendingMachine();
+        $this->assertNotNull($vendingMachine);
+        $this->assertCount(2, $vendingMachine->products());
 
-        $this->assertEquals(2, $data['products'][1]['id']);
-        $this->assertEquals('Example', $data['products'][1]['name']);
-        $this->assertEquals(25, $data['products'][1]['quantity']);
-        $this->assertEquals(0.23, $data['products'][1]['price']);
+        $this->assertEquals(1, $vendingMachine->products()[0]->productId()->value());
+        $this->assertEquals('Bread', $vendingMachine->products()[0]->itemName()->value());
+        $this->assertEquals(15, $vendingMachine->products()[0]->itemQuantity()->value());
+        $this->assertEquals(0.65, $vendingMachine->products()[0]->price()->value());
+
+        $this->assertEquals(2, $vendingMachine->products()[1]->productId()->value());
+        $this->assertEquals('Example', $vendingMachine->products()[1]->itemName()->value());
+        $this->assertEquals(25, $vendingMachine->products()[1]->itemQuantity()->value());
+        $this->assertEquals(0.23, $vendingMachine->products()[1]->price()->value());
 
         $this->inMemoryRepository->setProductPrice(PriceMother::create(0.20), ProductIdMother::create(1));
 
-        $data = $this->readDatabase();
-        $this->assertNotNull($data);
-        $this->assertEquals(1, $data['products'][0]['id']);
-        $this->assertEquals('Bread', $data['products'][0]['name']);
-        $this->assertEquals(15, $data['products'][0]['quantity']);
-        $this->assertEquals(0.20, $data['products'][0]['price']);
+        $vendingMachine = $this->getVendingMachine();
+        $this->assertNotNull($vendingMachine);
+
+        $this->assertEquals(1, $vendingMachine->products()[0]->productId()->value());
+        $this->assertEquals('Bread', $vendingMachine->products()[0]->itemName()->value());
+        $this->assertEquals(15, $vendingMachine->products()[0]->itemQuantity()->value());
+        $this->assertEquals(0.20, $vendingMachine->products()[0]->price()->value());
     }
 
     public function testSetProductQuantity()
@@ -125,28 +129,28 @@ class InMemoryRepositoryTest extends VendingMachineIntegrationModule
             ProductNameMother::create('Example'),
             QuantityMother::create(25)
         );
-        $data = $this->readDatabase();
-        $this->assertNotNull($data);
-        $this->assertCount(2, $data['products']);
+        $vendingMachine = $this->getVendingMachine();
+        $this->assertNotNull($vendingMachine);
+        $this->assertCount(2, $vendingMachine->products());
 
-        $this->assertEquals(1, $data['products'][0]['id']);
-        $this->assertEquals('Bread', $data['products'][0]['name']);
-        $this->assertEquals(15, $data['products'][0]['quantity']);
-        $this->assertEquals(0.65, $data['products'][0]['price']);
+        $this->assertEquals(1, $vendingMachine->products()[0]->productId()->value());
+        $this->assertEquals('Bread', $vendingMachine->products()[0]->itemName()->value());
+        $this->assertEquals(15, $vendingMachine->products()[0]->itemQuantity()->value());
+        $this->assertEquals(0.65, $vendingMachine->products()[0]->price()->value());
 
-        $this->assertEquals(2, $data['products'][1]['id']);
-        $this->assertEquals('Example', $data['products'][1]['name']);
-        $this->assertEquals(25, $data['products'][1]['quantity']);
-        $this->assertEquals(0.23, $data['products'][1]['price']);
+        $this->assertEquals(2, $vendingMachine->products()[1]->productId()->value());
+        $this->assertEquals('Example', $vendingMachine->products()[1]->itemName()->value());
+        $this->assertEquals(25, $vendingMachine->products()[1]->itemQuantity()->value());
+        $this->assertEquals(0.23, $vendingMachine->products()[1]->price()->value());
 
         $this->inMemoryRepository->setProductQuantity(QuantityMother::create(12), ProductIdMother::create(1));
 
-        $data = $this->readDatabase();
-        $this->assertNotNull($data);
-        $this->assertEquals(1, $data['products'][0]['id']);
-        $this->assertEquals('Bread', $data['products'][0]['name']);
-        $this->assertEquals(12, $data['products'][0]['quantity']);
-        $this->assertEquals(0.65, $data['products'][0]['price']);
+        $vendingMachine = $this->getVendingMachine();
+        $this->assertNotNull($vendingMachine);
+        $this->assertEquals(1, $vendingMachine->products()[0]->productId()->value());
+        $this->assertEquals('Bread', $vendingMachine->products()[0]->itemName()->value());
+        $this->assertEquals(12, $vendingMachine->products()[0]->itemQuantity()->value());
+        $this->assertEquals(0.65, $vendingMachine->products()[0]->price()->value());
     }
 
     public function testGetProductByName()
@@ -163,9 +167,9 @@ class InMemoryRepositoryTest extends VendingMachineIntegrationModule
             QuantityMother::create(2)
         );
 
-        $data = $this->readDatabase();
-        $this->assertNotNull($data);
-        $this->assertCount(2, $data['products']);
+        $vendingMachine = $this->getVendingMachine();
+        $this->assertNotNull($vendingMachine);
+        $this->assertCount(2, $vendingMachine->products());
 
         $product = $this->inMemoryRepository->getProductByName(ProductNameMother::create('Bread'));
 
@@ -186,13 +190,13 @@ class InMemoryRepositoryTest extends VendingMachineIntegrationModule
         $this->inMemoryRepository->insertAmount(AmountMother::create(1));
         $this->inMemoryRepository->insertAmount(AmountMother::create(1));
 
-        $data = $this->readDatabase();
-        $this->assertNotNull($data);
-        $this->assertEquals(3, $data['insertedMoney']);
+        $vendingMachine = $this->getVendingMachine();
+        $this->assertNotNull($vendingMachine);
+        $this->assertEquals(3, $vendingMachine->insertedMoney()->value());
 
         $this->inMemoryRepository->addChange(AmountMother::create(60));
-        $data = $this->readDatabase();
-        $this->assertEquals(60, $data['change']);
+        $vendingMachine = $this->getVendingMachine();
+        $this->assertEquals(60, $vendingMachine->change()->value());
 
         $insertedMoneyAndChange = $this->inMemoryRepository->getInsertedMoneyAndChange();
         $this->assertNotNull($insertedMoneyAndChange);
@@ -215,23 +219,23 @@ class InMemoryRepositoryTest extends VendingMachineIntegrationModule
         $this->inMemoryRepository->insertAmount(AmountMother::create(1));
         $this->inMemoryRepository->addChange(AmountMother::create(5));
 
-        $data = $this->readDatabase();
-        $this->assertNotNull($data);
-        $this->assertCount(1, $data['products']);
+        $vendingMachine = $this->getVendingMachine();
+        $this->assertNotNull($vendingMachine);
+        $this->assertCount(1, $vendingMachine->products());
 
         $this->inMemoryRepository->sellProduct(
-            ProductMother::create('Bread', 2, 15),
+            ProductMother::create('Bread', 2, 15, 1),
             QuantityMother::create(1),
             AmountMother::create(2)
         );
 
-        $data = $this->readDatabase();
+        $vendingMachine = $this->getVendingMachine();
 
-        $this->assertNotNull($data);
-        $this->assertCount(1, $data['products']);
-        $this->assertEquals(14, $data['products'][0]['quantity']);
-        $this->assertEquals(3, $data['change']);
-        $this->assertEquals(0, $data['insertedMoney']);
+        $this->assertNotNull($vendingMachine);
+        $this->assertCount(1, $vendingMachine->products());
+        $this->assertEquals(14, $vendingMachine->products()[0]->itemQuantity()->value());
+        $this->assertEquals(3, $vendingMachine->change()->value());
+        $this->assertEquals(0, $vendingMachine->insertedMoney()->value());
     }
 
     protected function setUp(): void

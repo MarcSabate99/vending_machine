@@ -5,7 +5,7 @@ Feature: Get products (buy products)
 
   Scenario: Get product with invalid input and leave
     When I wait to "Choose an action (insert, return, get, service, exit): " and I input "get"
-    When I wait to "Insert the quantity and the product name, example -> (10,SODA): " and I input "10"
+    When I wait to "Insert the quantity and the product name, example -> (10,Soda): " and I input "10"
     Then I should see "Provide a valid input" and continue
     Then I input "2,Coffee"
     Then I should see "Product Coffee not found" and continue
@@ -19,7 +19,7 @@ Feature: Get products (buy products)
     Then I should see "Product added" and continue
     Then the vending machine should have "Tomato" product with quantity "10" and price "0.35"
     When I input "get"
-    When I wait to "Insert the quantity and the product name, example -> (10,SODA): " and I input "2,Tomato"
+    When I wait to "Insert the quantity and the product name, example -> (10,Soda): " and I input "2,Tomato"
     Then I should see "Insufficient money to buy Tomato" and continue
     Then I input "insert"
     Then I wait to "Insert quantity: " and I input "1,1"
@@ -29,7 +29,7 @@ Feature: Get products (buy products)
     When I wait to "Insert the change: " and I input "2"
     Then I should see "Change added" and continue
     Then I input "get"
-    When I wait to "Insert the quantity and the product name, example -> (10,SODA): " and I input "2,Tomato"
+    When I wait to "Insert the quantity and the product name, example -> (10,Soda): " and I input "2,Tomato"
     Then I should see "Sold product: Tomato" and ends
     Then the vending machine should have "8" as quantity of "Tomato"
 
@@ -41,13 +41,13 @@ Feature: Get products (buy products)
     Then I should see "Product added" and continue
     Then the vending machine should have "Tomato" product with quantity "10" and price "0.35"
     When I input "get"
-    When I wait to "Insert the quantity and the product name, example -> (10,SODA): " and I input "2,Tomato"
+    When I wait to "Insert the quantity and the product name, example -> (10,Soda): " and I input "2,Tomato"
     Then I should see "Insufficient money to buy Tomato" and continue
     Then I input "insert"
     Then I wait to "Insert quantity: " and I input "1,1"
     Then I should see "Inserted" and continue
     Then I input "get"
-    When I wait to "Insert the quantity and the product name, example -> (10,SODA): " and I input "1,Tomato"
+    When I wait to "Insert the quantity and the product name, example -> (10,Soda): " and I input "1,Tomato"
     Then I should see "Insufficient change in vending machine" and ends
 
   Scenario: Get product with enough stock
@@ -58,7 +58,7 @@ Feature: Get products (buy products)
     Then I should see "Product added" and continue
     Then the vending machine should have "Tomato" product with quantity "10" and price "0.35"
     When I input "get"
-    When I wait to "Insert the quantity and the product name, example -> (10,SODA): " and I input "2,Tomato"
+    When I wait to "Insert the quantity and the product name, example -> (10,Soda): " and I input "2,Tomato"
     Then I should see "Insufficient money to buy Tomato" and continue
     Then I input "insert"
     Then I wait to "Insert quantity: " and I input "1,1,1,1,1,1,1,1,1,1,1,1"
@@ -68,7 +68,7 @@ Feature: Get products (buy products)
     When I wait to "Insert the change: " and I input "20"
     Then I should see "Change added" and continue
     Then I input "get"
-    When I wait to "Insert the quantity and the product name, example -> (10,SODA): " and I input "11,Tomato"
+    When I wait to "Insert the quantity and the product name, example -> (10,Soda): " and I input "11,Tomato"
     Then I should see "Insufficient stock to buy Tomato" and ends
 
   Scenario: Get product with enough money
@@ -79,7 +79,7 @@ Feature: Get products (buy products)
     Then I should see "Product added" and continue
     Then the vending machine should have "Tomato" product with quantity "10" and price "2"
     When I input "get"
-    When I wait to "Insert the quantity and the product name, example -> (10,SODA): " and I input "2,Tomato"
+    When I wait to "Insert the quantity and the product name, example -> (10,Soda): " and I input "2,Tomato"
     Then I should see "Insufficient money to buy Tomato" and continue
     Then I input "insert"
     Then I wait to "Insert quantity: " and I input "1"
@@ -89,7 +89,7 @@ Feature: Get products (buy products)
     When I wait to "Insert the change: " and I input "20"
     Then I should see "Change added" and continue
     Then I input "get"
-    When I wait to "Insert the quantity and the product name, example -> (10,SODA): " and I input "1,Tomato"
+    When I wait to "Insert the quantity and the product name, example -> (10,Soda): " and I input "1,Tomato"
     Then I should see "Insufficient money to buy Tomato" and ends
 
   Scenario: Get product no exists
@@ -100,7 +100,7 @@ Feature: Get products (buy products)
     Then I should see "Product added" and continue
     Then the vending machine should have "Tomato" product with quantity "10" and price "2"
     When I input "get"
-    When I wait to "Insert the quantity and the product name, example -> (10,SODA): " and I input "2,Grape"
+    When I wait to "Insert the quantity and the product name, example -> (10,Soda): " and I input "2,Grape"
     Then I should see "Product Grape not found" and ends
 
   Scenario: Get product with change if 0.05
@@ -111,7 +111,7 @@ Feature: Get products (buy products)
     Then I should see "Product added" and continue
     Then the vending machine should have "Tomato" product with quantity "10" and price "0.35"
     When I input "get"
-    When I wait to "Insert the quantity and the product name, example -> (10,SODA): " and I input "2,Tomato"
+    When I wait to "Insert the quantity and the product name, example -> (10,Soda): " and I input "2,Tomato"
     Then I should see "Insufficient money to buy Tomato" and continue
     Then I input "insert"
     Then I wait to "Insert quantity: " and I input "0.05,0.25,0.05,0.05"
@@ -121,7 +121,7 @@ Feature: Get products (buy products)
     When I wait to "Insert the change: " and I input "2"
     Then I should see "Change added" and continue
     When I input "get"
-    When I wait to "Insert the quantity and the product name, example -> (10,SODA): " and I input "1,Tomato"
+    When I wait to "Insert the quantity and the product name, example -> (10,Soda): " and I input "1,Tomato"
     Then I should see "Sold product: Tomato" and ends
     Then the vending machine should have "1.95" as a change
 

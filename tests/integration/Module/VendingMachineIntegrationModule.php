@@ -13,19 +13,22 @@ use VendingMachine\Infrastructure\Repository\InMemoryRepository;
 
 class VendingMachineIntegrationModule extends TestCase
 {
-    private InMemoryRepository $inMemoryRepository;
     public const DATABASE_PATH = 'tests/db/vending_machine.json';
 
-    public static function readDatabase(): ?array
+    public static function getVendingMachine(): VendingMachine
     {
-        $content = file_get_contents(self::DATABASE_PATH);
+        $databaseFile   = file_get_contents(self::DATABASE_PATH);
+        $vendingMachine = json_decode($databaseFile, true);
+        if (null === $vendingMachine) {
+            throw new \Exception('No database provided');
+        }
 
-        return json_decode($content, true);
+        return VendingMachine::from($vendingMachine);
     }
 
     public static function createDb(): void
     {
-        $vendingMachine     = new VendingMachine([], 0, 0);
+        $vendingMachine     = new VendingMachine([], new Amount(0), new Amount(0));
         $vendingMachineJson = json_encode([
             'products'      => $vendingMachine->products(),
             'change'        => $vendingMachine->change(),
