@@ -6,7 +6,7 @@ namespace App\Tests\ObjectMother;
 
 use VendingMachine\Domain\Model\Product;
 
-class ProductMother
+readonly class ProductMother
 {
     public static function create(string $productName, float $price, int $quantity, int $productId): Product
     {

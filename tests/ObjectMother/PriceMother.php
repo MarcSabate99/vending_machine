@@ -6,7 +6,7 @@ namespace App\Tests\ObjectMother;
 
 use VendingMachine\Domain\ValueObject\Price;
 
-class PriceMother
+readonly class PriceMother
 {
     public static function create(float $value): Price
     {

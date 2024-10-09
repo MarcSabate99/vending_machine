@@ -296,6 +296,25 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
         }
     }
 
+    public function testWithMoreThan2DecimalsAfterCalculation()
+    {
+        $product = ProductMother::create('Example', 0.65, 5, 1);
+        self::thereIsAProductInDb($product);
+        self::thereIsChange(AmountMother::create(2.65));
+        self::thereIsInsertedMoney(AmountMother::create(1.95));
+
+        try {
+            $change = $this->getProductCommandHandler->handle(
+                new GetProductCommand(3, 'Example')
+            );
+
+            $this->assertEquals(0, $change->value());
+            self::theChangeShouldBe(AmountMother::create(2.65));
+        } catch (\Throwable $exception) {
+            $this->fail($exception->getMessage());
+        }
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

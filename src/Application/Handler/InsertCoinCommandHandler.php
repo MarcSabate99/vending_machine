@@ -9,11 +9,11 @@ use VendingMachine\Domain\Interface\DatabaseRepositoryInterface;
 use VendingMachine\Domain\Service\InsertedMoneyValidator;
 use VendingMachine\Domain\ValueObject\Amount;
 
-class InsertCoinCommandHandler
+readonly class InsertCoinCommandHandler
 {
     public function __construct(
-        private readonly DatabaseRepositoryInterface $databaseRepository,
-        private readonly InsertedMoneyValidator $insertedMoneyValidator,
+        private DatabaseRepositoryInterface $databaseRepository,
+        private InsertedMoneyValidator $insertedMoneyValidator,
     ) {
     }
 

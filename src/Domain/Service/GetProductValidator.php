@@ -23,18 +23,19 @@ class GetProductValidator
         Amount $currentChange,
         Amount $change,
     ): void {
-        if ($product->price()->value() < self::NO_COST) {
+        if (number_format($product->price()->value(), 2) < self::NO_COST) {
             throw ProductWithNegativePriceException::of($product->itemName());
         }
 
-        if (($product->price()->value() * $quantity->value()) > $insertedMoney->value()) {
+        if (number_format($product->price()->value() * $quantity->value(), 2) > number_format($insertedMoney->value(), 2)) {
             throw InsufficientMoneyException::of($product);
         }
 
         if ($product->itemQuantity()->value() < $quantity->value()) {
             throw InsufficientStockException::of($product);
         }
-        if ($currentChange->value() < $change->value()) {
+
+        if (number_format($currentChange->value(), 2) < number_format($change->value(), 2)) {
             throw InsufficientChangeException::of();
         }
     }

@@ -27,7 +27,7 @@ readonly class InMemoryRepository implements DatabaseRepositoryInterface
     {
         $vendingMachine = $this->getVendingMachine();
         $vendingMachine->setInsertedMoney(
-            new Amount($vendingMachine->insertedMoney()->value() + $amount->value())
+            new Amount((float) number_format($vendingMachine->insertedMoney()->value() + $amount->value(), 2))
         );
         $this->save($vendingMachine);
     }
@@ -43,7 +43,7 @@ readonly class InMemoryRepository implements DatabaseRepositoryInterface
     {
         $vendingMachine = $this->getVendingMachine();
         $vendingMachine->setChange(
-            new Amount($vendingMachine->change()->value() + $amount->value())
+            new Amount((float) number_format($vendingMachine->change()->value() + $amount->value(), 2))
         );
         $this->save($vendingMachine);
     }

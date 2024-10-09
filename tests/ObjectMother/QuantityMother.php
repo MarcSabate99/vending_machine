@@ -6,7 +6,7 @@ namespace App\Tests\ObjectMother;
 
 use VendingMachine\Domain\ValueObject\Quantity;
 
-class QuantityMother
+readonly class QuantityMother
 {
     public static function create(int $value): Quantity
     {

@@ -10,10 +10,10 @@ use VendingMachine\Domain\ValueObject\Price;
 use VendingMachine\Domain\ValueObject\ProductName;
 use VendingMachine\Domain\ValueObject\Quantity;
 
-class AddProductCommandHandler
+readonly class AddProductCommandHandler
 {
     public function __construct(
-        private readonly DatabaseRepositoryInterface $databaseRepository,
+        private DatabaseRepositoryInterface $databaseRepository,
     ) {
     }
 

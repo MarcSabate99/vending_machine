@@ -41,3 +41,6 @@ test:
 
 create-db:
 	docker exec -it php-fpm bash config/create_db.bash
+
+create-db-test:
+	docker exec -it php-fpm bash config/create_db.bash --dev

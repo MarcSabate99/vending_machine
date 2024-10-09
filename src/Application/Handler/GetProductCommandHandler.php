@@ -12,11 +12,11 @@ use VendingMachine\Domain\ValueObject\Amount;
 use VendingMachine\Domain\ValueObject\ProductName;
 use VendingMachine\Domain\ValueObject\Quantity;
 
-class GetProductCommandHandler
+readonly class GetProductCommandHandler
 {
     public function __construct(
-        private readonly DatabaseRepositoryInterface $databaseRepository,
-        private readonly GetProduct $getProduct,
+        private DatabaseRepositoryInterface $databaseRepository,
+        private GetProduct $getProduct,
     ) {
     }
 

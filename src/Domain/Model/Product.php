@@ -12,10 +12,10 @@ use VendingMachine\Domain\ValueObject\Quantity;
 class Product
 {
     public function __construct(
-        private ProductName $itemName,
+        private readonly ProductName $itemName,
         private Price $price,
         private Quantity $itemQuantity,
-        private ProductId $productId,
+        private readonly ProductId $productId,
     ) {
     }
 

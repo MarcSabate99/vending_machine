@@ -9,11 +9,11 @@ use VendingMachine\Domain\Model\Product;
 use VendingMachine\Domain\ValueObject\Amount;
 use VendingMachine\Domain\ValueObject\Quantity;
 
-class GetProduct
+readonly class GetProduct
 {
     public function __construct(
-        private readonly GetProductValidator $getProductValidator,
-        private readonly DatabaseRepositoryInterface $databaseRepository,
+        private GetProductValidator $getProductValidator,
+        private DatabaseRepositoryInterface $databaseRepository,
     ) {
     }
 

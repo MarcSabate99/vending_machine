@@ -9,10 +9,10 @@ use VendingMachine\Domain\Interface\DatabaseRepositoryInterface;
 use VendingMachine\Domain\ValueObject\ProductId;
 use VendingMachine\Domain\ValueObject\Quantity;
 
-class SetProductQuantityCommandHandler
+readonly class SetProductQuantityCommandHandler
 {
     public function __construct(
-        private readonly DatabaseRepositoryInterface $databaseRepository,
+        private DatabaseRepositoryInterface $databaseRepository,
     ) {
     }
 
