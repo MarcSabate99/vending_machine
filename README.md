@@ -17,30 +17,30 @@ Clone the project:
 ```
 git clone https://github.com/MarcSabate99/vending_machine.git
 ```
-Execute this command in the root path:
+Execute this command in the project root path:
 ```
 make install
 ```
 ### How to run the tests
-To run unit test run in the root path:
+To run unit test run in the project root path:
 ```
 make test-unit
 ```
-To run integration test run in the root path:
+To run integration test run in the project root path:
 ```
 make test-integration
 ```
-To run e2e test run in the root path:
+To run e2e test run in the project root path:
 ```
 make test-e2e
 ```
-To run all tests run in the root path:
+To run all tests run in the project root path:
 ```
 make test
 ```
 
 ### How works
-You can run the application using:
+You can run the application using in the project root path:
 ```
 make run
 ```
