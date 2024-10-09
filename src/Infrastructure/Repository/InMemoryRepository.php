@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace VendingMachine\Infrastructure\Repository;
 
+use VendingMachine\Domain\Entity\VendingMachine;
 use VendingMachine\Domain\Interface\DatabaseRepositoryInterface;
 use VendingMachine\Domain\Model\Product;
 use VendingMachine\Domain\ValueObject\Amount;
@@ -24,85 +25,109 @@ readonly class InMemoryRepository implements DatabaseRepositoryInterface
 
     public function insertAmount(Amount $amount): void
     {
-        $vendingMachineJson = $this->getData();
-        $vendingMachineJson['insertedMoney'] += $amount->value();
-        $this->save($vendingMachineJson);
+        $vendingMachine = $this->getVendingMachine();
+        $vendingMachine->setInsertedMoney(
+            new Amount($vendingMachine->insertedMoney()->value() + $amount->value())
+        );
+        $this->save($vendingMachine);
     }
 
     public function returnInsertedCoins(): void
     {
-        $vendingMachineJson                  = $this->getData();
-        $vendingMachineJson['insertedMoney'] = self::NO_MONEY;
-        $this->save($vendingMachineJson);
+        $vendingMachine = $this->getVendingMachine();
+        $vendingMachine->setInsertedMoney(new Amount(self::NO_MONEY));
+        $this->save($vendingMachine);
     }
 
     public function addChange(Amount $amount): void
     {
-        $vendingMachineJson = $this->getData();
-        $vendingMachineJson['change'] += $amount->value();
-        $this->save($vendingMachineJson);
+        $vendingMachine = $this->getVendingMachine();
+        $vendingMachine->setChange(
+            new Amount($vendingMachine->change()->value() + $amount->value())
+        );
+        $this->save($vendingMachine);
     }
 
     public function addProduct(Price $price, ProductName $productName, Quantity $quantity): void
     {
-        $vendingMachineJson               = $this->getData();
-        $vendingMachineJson['products'][] = [
-            'name'     => $productName->value(),
-            'quantity' => $quantity->value(),
-            'price'    => $price->value(),
-            'id'       => $this->generateId(),
-        ];
-        $this->save($vendingMachineJson);
+        $vendingMachine    = $this->getVendingMachine();
+        $currentProducts   = $vendingMachine->products();
+        $currentProducts[] = new Product(
+            $productName,
+            $price,
+            $quantity,
+            new ProductId($this->generateId())
+        );
+        $vendingMachine->setProducts($currentProducts);
+        $this->save($vendingMachine);
     }
 
     public function listProducts(): array
     {
-        $vendingMachineJson = $this->getData();
+        $vendingMachine = $this->getVendingMachine();
+        $products       = [];
 
-        return $vendingMachineJson['products'];
+        /**
+         * @var Product $product
+         */
+        foreach ($vendingMachine->products() as $product) {
+            $products[] = [
+                'name'     => $product->itemName()->value(),
+                'quantity' => $product->itemQuantity()->value(),
+                'price'    => $product->price()->value(),
+                'id'       => $product->productId()->value(),
+            ];
+        }
+
+        return $products;
     }
 
     public function setProductQuantity(Quantity $quantity, ProductId $productId): void
     {
-        $vendingMachineJson = $this->getData();
-        foreach ($vendingMachineJson['products'] as &$product) {
-            if ($product['id'] !== $productId->value()) {
+        $vendingMachine = $this->getVendingMachine();
+        /**
+         * @var Product $product
+         */
+        foreach ($vendingMachine->products() as $product) {
+            if ($product->productId()->value() !== $productId->value()) {
                 continue;
             }
-
-            $product['quantity'] = $quantity->value();
+            $product->setItemQuantity($quantity);
+            break;
         }
 
-        $this->save($vendingMachineJson);
+        $this->save($vendingMachine);
     }
 
     public function setProductPrice(Price $price, ProductId $productId): void
     {
-        $vendingMachineJson = $this->getData();
-        foreach ($vendingMachineJson['products'] as &$product) {
-            if ($product['id'] !== $productId->value()) {
+        $vendingMachine = $this->getVendingMachine();
+        /**
+         * @var Product $product
+         */
+        foreach ($vendingMachine->products() as $product) {
+            if ($product->productId()->value() !== $productId->value()) {
                 continue;
             }
-
-            $product['price'] = $price->value();
+            $product->setPrice($price);
+            break;
         }
 
-        $this->save($vendingMachineJson);
+        $this->save($vendingMachine);
     }
 
     public function getProductByName(ProductName $productName): ?Product
     {
-        $vendingMachineJson = $this->getData();
-        foreach ($vendingMachineJson['products'] as $product) {
-            if ($product['name'] !== $productName->value()) {
+        $vendingMachine = $this->getVendingMachine();
+        /**
+         * @var Product $product
+         */
+        foreach ($vendingMachine->products() as $product) {
+            if ($product->itemName()->value() !== $productName->value()) {
                 continue;
             }
 
-            return new Product(
-                new ProductName($product['name']),
-                new Price($product['price']),
-                new Quantity($product['quantity'])
-            );
+            return $product;
         }
 
         return null;
@@ -110,54 +135,72 @@ readonly class InMemoryRepository implements DatabaseRepositoryInterface
 
     public function sellProduct(Product $product, Quantity $quantity, Amount $change): void
     {
-        $vendingMachineJson = $this->getData();
-        foreach ($vendingMachineJson['products'] as &$productArray) {
-            if ($productArray['name'] !== $product->itemName()->value()) {
+        $vendingMachine = $this->getVendingMachine();
+        /**
+         * @var Product $p
+         */
+        foreach ($vendingMachine->products() as $p) {
+            if ($p->itemName()->value() !== $product->itemName()->value()) {
                 continue;
             }
 
-            $productArray['quantity'] -= $quantity->value();
+            $p->setItemQuantity(
+                new Quantity($p->itemQuantity()->value() - $quantity->value())
+            );
         }
 
-        $vendingMachineJson['change']        = (float) number_format($vendingMachineJson['change'] - $change->value(), 2, '.', '');
-        $vendingMachineJson['insertedMoney'] = 0;
-        $this->save($vendingMachineJson);
+        $vendingMachine->setChange(
+            new Amount(
+                (float) number_format($vendingMachine->change()->value() - $change->value(), 2, '.', '')
+            )
+        );
+
+        $vendingMachine->setInsertedMoney(
+            new Amount(0)
+        );
+
+        $this->save($vendingMachine);
     }
 
     public function getInsertedMoneyAndChange(): array
     {
-        $vendingMachineJson = $this->getData();
+        $vendingMachine = $this->getVendingMachine();
 
         return [
-            'change'        => new Amount($vendingMachineJson['change']),
-            'insertedMoney' => new Amount($vendingMachineJson['insertedMoney']),
+            'change'        => $vendingMachine->change(),
+            'insertedMoney' => $vendingMachine->insertedMoney(),
         ];
     }
 
-    private function getData(): ?array
+    private function getVendingMachine(): VendingMachine
     {
-        $databaseFile = file_get_contents($this->databasePath);
+        $databaseFile   = file_get_contents($this->databasePath);
+        $vendingMachine = json_decode($databaseFile, true);
+        if (null === $vendingMachine) {
+            throw new \Exception('No database provided');
+        }
 
-        return json_decode($databaseFile, true);
+        return VendingMachine::from($vendingMachine);
     }
 
-    private function save(array $vendingMachineJson): void
+    private function save(VendingMachine $vendingMachine): void
     {
-        $vendingMachineJson = json_encode([
-            'products'      => $vendingMachineJson['products'],
-            'change'        => $vendingMachineJson['change'],
-            'insertedMoney' => $vendingMachineJson['insertedMoney'],
-        ], JSON_PRETTY_PRINT);
+        $vendingMachineArray = $vendingMachine->toArray();
+        $vendingMachineJson  = json_encode($vendingMachineArray, JSON_PRETTY_PRINT);
         file_put_contents($this->databasePath, $vendingMachineJson);
     }
 
-    private function generateId()
+    private function generateId(): int
     {
-        $vendingMachineJson = $this->getData();
-        if (!empty($vendingMachineJson['products'])) {
-            $lastProduct = end($vendingMachineJson['products']);
+        $vendingMachine = $this->getVendingMachine();
+        $products       = $vendingMachine->products();
+        if (!empty($products)) {
+            /**
+             * @var Product $lastProduct
+             */
+            $lastProduct = end($products);
 
-            return $lastProduct['id'] + self::BASE_ID;
+            return $lastProduct->productId()->value() + self::BASE_ID;
         }
 
         return self::BASE_ID;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace VendingMachine\Domain\ValueObject;
 
-class ProductId
+readonly class ProductId
 {
     public function __construct(
         private int $value,

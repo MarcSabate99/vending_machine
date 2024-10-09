@@ -22,7 +22,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testZeroQuantity()
     {
-        $product = ProductMother::create('Example', 50, 10);
+        $product = ProductMother::create('Example', 50, 10, 1);
 
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(100));
@@ -41,7 +41,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testNegativeQuantity()
     {
-        $product = ProductMother::create('Example', 50, 10);
+        $product = ProductMother::create('Example', 50, 10, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(100));
         self::thereIsInsertedMoney(AmountMother::create(100));
@@ -54,7 +54,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testZeroInsertedMoney()
     {
-        $product = ProductMother::create('Example', 50, 10);
+        $product = ProductMother::create('Example', 50, 10, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(100));
         self::thereIsInsertedMoney(AmountMother::create(0));
@@ -67,7 +67,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testNegativeInsertedMoney()
     {
-        $product = ProductMother::create('Example', 50, 10);
+        $product = ProductMother::create('Example', 50, 10, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(100));
         self::thereIsInsertedMoney(AmountMother::create(-50));
@@ -80,7 +80,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testInsertedMoneyEqualProductCost()
     {
-        $product = ProductMother::create('Example', 50, 5);
+        $product = ProductMother::create('Example', 50, 5, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(100));
         self::thereIsInsertedMoney(AmountMother::create(50));
@@ -99,7 +99,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testInsufficientChangeAvailable()
     {
-        $product = ProductMother::create('Example', 60, 10);
+        $product = ProductMother::create('Example', 60, 10, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(5));
         self::thereIsInsertedMoney(AmountMother::create(100));
@@ -112,7 +112,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testProductStockIsZero()
     {
-        $product = ProductMother::create('Example', 30, 0);
+        $product = ProductMother::create('Example', 30, 0, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(50));
         self::thereIsInsertedMoney(AmountMother::create(50));
@@ -125,7 +125,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testBuyMoreItemsThanAvailableStock()
     {
-        $product = ProductMother::create('Example', 25, 2);
+        $product = ProductMother::create('Example', 25, 2, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(100));
         self::thereIsInsertedMoney(AmountMother::create(100));
@@ -138,7 +138,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testNegativeProductPrice()
     {
-        $product = ProductMother::create('Example', -50, 10);
+        $product = ProductMother::create('Example', -50, 10, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(100));
         self::thereIsInsertedMoney(AmountMother::create(100));
@@ -151,7 +151,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testNegativeChangeResult()
     {
-        $product = ProductMother::create('Example', 150, 5);
+        $product = ProductMother::create('Example', 150, 5, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(50));
         self::thereIsInsertedMoney(AmountMother::create(100));
@@ -164,7 +164,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testWithProductPriceFloat()
     {
-        $product = ProductMother::create('Example', 99.99, 10);
+        $product = ProductMother::create('Example', 99.99, 10, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(100));
         self::thereIsInsertedMoney(AmountMother::create(100.00));
@@ -183,7 +183,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testWithProductPriceDiff()
     {
-        $product = ProductMother::create('Example', 50.01, 10);
+        $product = ProductMother::create('Example', 50.01, 10, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(5));
         self::thereIsInsertedMoney(AmountMother::create(50));
@@ -196,7 +196,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testExactChangeWithDecimalProductPrice()
     {
-        $product = ProductMother::create('Example', 75.75, 10);
+        $product = ProductMother::create('Example', 75.75, 10, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(10.25));
         self::thereIsInsertedMoney(AmountMother::create(86));
@@ -215,7 +215,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testMultipleQuantitiesWithDecimals()
     {
-        $product = ProductMother::create('Example', 33.33, 5);
+        $product = ProductMother::create('Example', 33.33, 5, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(40));
         self::thereIsInsertedMoney(AmountMother::create(100));
@@ -234,7 +234,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testMultipleQuantitiesWithDecimalsWithInsufficientChange()
     {
-        $product = ProductMother::create('Example', 33.33, 5);
+        $product = ProductMother::create('Example', 33.33, 5, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(20));
         self::thereIsInsertedMoney(AmountMother::create(100));
@@ -247,7 +247,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testPriceWithFloatDecimal()
     {
-        $product = ProductMother::create('Example', 29.99, 10);
+        $product = ProductMother::create('Example', 29.99, 10, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(100));
         self::thereIsInsertedMoney(AmountMother::create(90));
@@ -266,7 +266,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testPriceWithFloatDecimalWithoutEnoughChange()
     {
-        $product = ProductMother::create('Example', 29.99, 10);
+        $product = ProductMother::create('Example', 29.99, 10, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(0.02));
         self::thereIsInsertedMoney(AmountMother::create(90));
@@ -279,7 +279,7 @@ class GetProductCommandHandlerTest extends VendingMachineIntegrationModule
 
     public function testNoChangeReturnMatchByProductPrice()
     {
-        $product = ProductMother::create('Example', 12.34, 10);
+        $product = ProductMother::create('Example', 12.34, 10, 1);
         self::thereIsAProductInDb($product);
         self::thereIsChange(AmountMother::create(50));
         self::thereIsInsertedMoney(AmountMother::create(37.02));

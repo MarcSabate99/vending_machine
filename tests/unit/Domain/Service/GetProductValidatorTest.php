@@ -22,7 +22,7 @@ class GetProductValidatorTest extends TestCase
         $this->expectException(InsufficientMoneyException::class);
 
         $this->getProductValidator->handle(
-            ProductMother::create('Example', 0.5, 2),
+            ProductMother::create('Example', 0.5, 2, 1),
             QuantityMother::create(1),
             AmountMother::create(0.2),
             AmountMother::create(2),
@@ -35,7 +35,7 @@ class GetProductValidatorTest extends TestCase
         $this->expectException(InsufficientStockException::class);
 
         $this->getProductValidator->handle(
-            ProductMother::create('Example', 0.5, 1),
+            ProductMother::create('Example', 0.5, 1, 1),
             QuantityMother::create(2),
             AmountMother::create(2),
             AmountMother::create(2),
@@ -47,7 +47,7 @@ class GetProductValidatorTest extends TestCase
     {
         try {
             $this->getProductValidator->handle(
-                ProductMother::create('Example', 0.5, 1),
+                ProductMother::create('Example', 0.5, 1, 1),
                 QuantityMother::create(1),
                 AmountMother::create(2),
                 AmountMother::create(2),
@@ -64,7 +64,7 @@ class GetProductValidatorTest extends TestCase
         $this->expectException(InsufficientChangeException::class);
 
         $this->getProductValidator->handle(
-            ProductMother::create('Example', 0.5, 1),
+            ProductMother::create('Example', 0.5, 1, 1),
             QuantityMother::create(1),
             AmountMother::create(2),
             AmountMother::create(2),
@@ -76,7 +76,7 @@ class GetProductValidatorTest extends TestCase
     {
         try {
             $this->getProductValidator->handle(
-                ProductMother::create('Example', 0.5, 1),
+                ProductMother::create('Example', 0.5, 1, 1),
                 QuantityMother::create(1),
                 AmountMother::create(2),
                 AmountMother::create(2),

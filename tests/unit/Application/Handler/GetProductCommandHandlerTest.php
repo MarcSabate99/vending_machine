@@ -46,7 +46,7 @@ class GetProductCommandHandlerTest extends TestCase
             ->expects($this->once())
             ->method('getProductByName')
             ->with(ProductNameMother::create('Existent product'))
-            ->willReturn(ProductMother::create('Existent product', 1.50, 1));
+            ->willReturn(ProductMother::create('Existent product', 1.50, 1, 1));
 
         $this->databaseRepository
             ->expects($this->once())

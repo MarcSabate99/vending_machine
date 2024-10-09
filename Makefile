@@ -39,6 +39,5 @@ test:
 	docker exec -it php-fpm bash config/create_db.bash --dev
 	docker exec -it php-fpm php vendor/bin/behat
 
-
 create-db:
 	docker exec -it php-fpm bash config/create_db.bash

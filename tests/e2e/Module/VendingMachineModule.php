@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\e2e\Module;
 
 use VendingMachine\Domain\Entity\VendingMachine;
+use VendingMachine\Domain\ValueObject\Amount;
 
 class VendingMachineModule
 {
@@ -12,7 +13,7 @@ class VendingMachineModule
 
     public static function createDb(): void
     {
-        $vendingMachine     = new VendingMachine([], 0, 0);
+        $vendingMachine     = new VendingMachine([], new Amount(0), new Amount(0));
         $vendingMachineJson = json_encode([
             'products'      => $vendingMachine->products(),
             'change'        => $vendingMachine->change(),
@@ -22,10 +23,14 @@ class VendingMachineModule
         file_put_contents(self::DATABASE_PATH, $vendingMachineJson);
     }
 
-    public function getData()
+    public static function getVendingMachine(): VendingMachine
     {
-        $content = file_get_contents(self::DATABASE_PATH);
+        $databaseFile   = file_get_contents(self::DATABASE_PATH);
+        $vendingMachine = json_decode($databaseFile, true);
+        if (null === $vendingMachine) {
+            throw new \Exception('No database provided');
+        }
 
-        return json_decode($content, true);
+        return VendingMachine::from($vendingMachine);
     }
 }
