@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VendingMachine\Domain\Service;
 
 use VendingMachine\Domain\Interface\DatabaseRepositoryInterface;
@@ -31,6 +33,6 @@ class GetProduct
         );
         $this->databaseRepository->sellProduct($product, $quantity, $change);
 
-        return new Amount(number_format($change->value(), 2, '.', ''));
+        return new Amount((float) number_format($change->value(), 2, '.', ''));
     }
 }

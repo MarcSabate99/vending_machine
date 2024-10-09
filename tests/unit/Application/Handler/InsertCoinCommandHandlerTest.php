@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\unit\Application\Handler;
 
 use App\Tests\ObjectMother\AmountMother;

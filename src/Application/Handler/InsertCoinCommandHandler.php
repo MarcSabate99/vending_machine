@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace VendingMachine\Application\Handler;
 
 use VendingMachine\Application\Command\InsertCoinCommand;
@@ -17,7 +19,7 @@ class InsertCoinCommandHandler
 
     public function handle(InsertCoinCommand $command): void
     {
-        if (str_contains($command->quantity(), ',')) {
+        if (!is_float($command->quantity()) && str_contains($command->quantity(), ',')) {
             $values     = explode(',', $command->quantity());
             $finalValue = 0;
             foreach ($values as $value) {
@@ -28,18 +30,18 @@ class InsertCoinCommandHandler
 
             $finalValue = number_format($finalValue, 2, '.', '');
             $this->databaseRepository->insertAmount(
-                new Amount($finalValue)
+                new Amount((float) $finalValue)
             );
 
             return;
         }
 
-        $castedValue = (float) $command->quantity();
-        $this->insertedMoneyValidator->handle($castedValue);
-        $finalValue = number_format($castedValue, 2, '.', '');
+        $quantity = (float) $command->quantity();
+        $this->insertedMoneyValidator->handle($quantity);
+        $finalValue = number_format($quantity, 2, '.', '');
 
         $this->databaseRepository->insertAmount(
-            new Amount($finalValue)
+            new Amount((float) $finalValue)
         );
     }
 }

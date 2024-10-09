@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\e2e\Module;
 
 use VendingMachine\Domain\Entity\VendingMachine;
