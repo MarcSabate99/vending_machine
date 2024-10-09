@@ -22,7 +22,6 @@ class GetProduct
         Amount $currentChange,
     ): Amount {
         $change = new Amount($insertedMoney->value() - ($product->price()->value() * $quantity->value()));
-
         $this->getProductValidator->handle(
             $product,
             $quantity,
@@ -30,9 +29,8 @@ class GetProduct
             $currentChange,
             $change
         );
-
         $this->databaseRepository->sellProduct($product, $quantity, $change);
 
-        return $change;
+        return new Amount(number_format($change->value(), 2, '.', ''));
     }
 }

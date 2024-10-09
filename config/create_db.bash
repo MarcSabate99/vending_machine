@@ -40,7 +40,11 @@ dbTest=$(cat <<EOF
 EOF
 )
 
-echo "$dbReal" > db/vending_machine.json
-echo "$dbTest" > tests/db/vending_machine.json
+if [[ "$1" == "--dev" ]]; then
+    echo "$dbTest" > tests/db/vending_machine.json
+else
+    echo "$dbReal" > db/vending_machine.json
+    echo "$dbTest" > tests/db/vending_machine.json
+fi
 
 echo "Database files created successfully."

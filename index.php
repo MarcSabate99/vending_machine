@@ -71,13 +71,13 @@ while (true) {
             echo "Money returned\n";
             break;
         case GET:
-            echo "Insert the quantity and the product name example -> (10,SODA): ";
+            echo "Insert the quantity and the product name, example -> (10,SODA): ";
             $handle = fopen("php://stdin", "r");
             $getData = trim(fgets($handle));
             $getData = explode(',', $getData);
             while(count($getData) < 2) {
                 echo "Provide a valid input\n";
-                echo "Insert the quantity and the product name example -> (10,SODA): ";
+                echo "Insert the quantity and the product name, example -> (10,SODA): ";
                 $handle = fopen("php://stdin", "r");
                 $getData = trim(fgets($handle));
                 $getData = explode(',', $getData);

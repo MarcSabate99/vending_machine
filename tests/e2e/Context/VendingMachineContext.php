@@ -107,6 +107,35 @@ class VendingMachineContext extends VendingMachineModule implements Context
     }
 
     /**
+     * @Then /^the vending machine should have "([^"]*)" as quantity of "([^"]*)"$/
+     */
+    public function theVendingMachineShouldHaveAsQuantityOf($quantity, $productName): void
+    {
+        $vendingMachine = $this->getData();
+        $found          = false;
+        foreach ($vendingMachine['products'] as $product) {
+            if ($product['name'] === $productName) {
+                Assert::assertEquals((float) $quantity, (float) $product['quantity']);
+                $found = true;
+                break;
+            }
+        }
+
+        if (!$found) {
+            Assert::fail('Product no exists');
+        }
+    }
+
+    /**
+     * @Then /^the vending machine should have "([^"]*)" as a change$/
+     */
+    public function theVendingMachineShouldHaveAsAChange($expectedChange): void
+    {
+        $vendingMachine = $this->getData();
+        Assert::assertEquals((float) $expectedChange, (float) $vendingMachine['change']);
+    }
+
+    /**
      * @AfterScenario
      */
     public function afterScenario(ScenarioScope $scope): void

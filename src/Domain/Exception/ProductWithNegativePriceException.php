@@ -4,10 +4,10 @@ namespace VendingMachine\Domain\Exception;
 
 use VendingMachine\Domain\ValueObject\ProductName;
 
-class ProductNotFoundException extends \Exception
+class ProductWithNegativePriceException extends \Exception
 {
     public static function of(ProductName $productName)
     {
-        return new self('Product ' . $productName->value() . ' not found');
+        return new self('Product ' . $productName->value() . ' has negative price');
     }
 }
